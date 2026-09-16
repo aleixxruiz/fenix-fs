@@ -929,3 +929,7 @@ body::after {
   font-family: var(--font-body); font-weight: 600; font-size: 1.15rem; letter-spacing: 0;
   text-transform: none; color: var(--white); margin-bottom: 1.1rem;
 }
+
+/* v18b · Patrocinadores en filas de tres (3 + 2), centradas */
+.sponsors-block-main .sponsors-grid .sponsor { flex: 0 0 30%; max-width: 30%; }
+@media (max-width: 720px) { .sponsors-block-main .sponsors-grid .sponsor { flex: 0 0 45%; max-width: 45%; } }
