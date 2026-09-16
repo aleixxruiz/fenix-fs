@@ -896,3 +896,26 @@ body::after {
 .contact-form { background: var(--black-3); border: 1px solid var(--line); }
 .section-contact { background-image: none !important; background-color: rgba(14,14,16,0.55) !important; }
 .section-contact::before { background: transparent !important; }
+
+/* =====================================================================
+   v17 · Pie compacto con iconos
+   ===================================================================== */
+.site-footer { padding: 1.1rem 0; border-top: 1px solid var(--line); background: rgba(11,11,12,0.85); }
+.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.footer-brand { display: flex; align-items: center; gap: 0.6rem; }
+.footer-logo { width: 34px; height: auto; margin: 0; }
+.footer-hashtag { font-family: var(--font-display); font-size: 1.15rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white) !important; margin: 0; }
+.footer-hashtag span { color: var(--red); }
+.footer-links { display: flex; gap: 0.5rem; }
+.footer-links a {
+  display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--line); color: var(--grey); transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s;
+}
+.footer-links a svg { width: 17px; height: 17px; }
+.footer-links a:hover { color: #fff; background: var(--red); border-color: var(--red); transform: translateY(-2px); }
+.footer-copy { margin: 0; font-size: 0.78rem; color: var(--grey-dark); grid-column: auto; }
+@media (max-width: 720px) {
+  .footer-inner { justify-content: center; text-align: center; gap: 0.8rem; }
+  .footer-brand, .footer-links, .footer-copy { width: 100%; justify-content: center; }
+  .footer-brand { display: flex; }
+}
