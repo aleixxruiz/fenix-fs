@@ -835,3 +835,27 @@ body.modal-open { overflow: hidden; }
 .brand-hashtag span { color: var(--red); }
 .hero-text { margin-top: 1.4rem; }
 @media (max-width: 720px) { .brand-hashtag { font-size: 1.2rem; letter-spacing: 0.15em; } .brand-logo { height: 40px; } }
+
+/* =====================================================================
+   v15 · Patrocinadores y colaboradores en dos bloques diferenciados
+   ===================================================================== */
+.sponsors-block { border-radius: var(--radius); padding: 1.8rem 1.5rem 2rem; }
+.sponsors-block-main { background: var(--black-3); border: 1px solid rgba(226,0,26,0.35); }
+.sponsors-block-collab { margin-top: 1.4rem; border: 1px dashed var(--line); }
+.sponsors-block-collab:has(#collaborators:empty) { display: none; }
+.sponsors-subtitle {
+  display: flex; align-items: baseline; gap: 0.9rem; flex-wrap: wrap; text-align: left;
+  margin: 0 0 1.4rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--line);
+  font-size: 1.5rem; letter-spacing: 0.2em; color: var(--white);
+}
+.sponsors-block-main .sponsors-subtitle { color: var(--red); }
+.sponsors-block-collab .sponsors-subtitle { color: var(--gold); font-size: 1.2rem; }
+.sponsors-subtitle small { font-family: var(--font-body); font-size: 0.78rem; letter-spacing: 0.05em; text-transform: none; color: var(--grey); }
+.sponsors-block-collab .sponsor img { max-height: 76px; max-width: 200px; opacity: 0.85; }
+.sponsors-block-collab .sponsor:hover img { opacity: 1; }
+.sponsors-block-collab .sponsors-grid, .sponsors-grid-collab { justify-content: flex-start; gap: 1rem 2.5rem; }
+.sponsors-block-main .sponsors-grid { justify-content: center; }
+@media (max-width: 720px) {
+  .sponsors-block { padding: 1.2rem 1rem 1.4rem; }
+  .sponsors-block-collab .sponsor img { max-height: 60px; max-width: 150px; }
+}
