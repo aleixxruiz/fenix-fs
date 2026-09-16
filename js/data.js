@@ -151,7 +151,7 @@ const CLUB = {
      'photo' es opcional: si no existe, se muestran las iniciales. */
   miembros: [
     { name: "Biel Altarriba",  role: "Presidente",        photo: "assets/img/members/biel-altarriba.jpg" },
-    { name: "Riquelme Soler",  role: "Vicepresidente",    photo: "assets/img/members/riquelme-soler.jpg" },
+    { name: "Cristian Riquelme", role: "Vicepresidente",  photo: "assets/img/members/cristian-riquelme.jpg" },
     { name: "Ciscu Venegas",   role: "Tesorero",          photo: "assets/img/members/ciscu-venegas.jpg" },
     { name: "Sergio Rodríguez", role: "Community Manager", photo: "assets/img/members/sergio-rodriguez.jpg" }
   ],
