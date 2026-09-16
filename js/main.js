@@ -50,12 +50,13 @@
   const tlEl = $("#timeline");
   if (tlEl && CLUB.historia) {
     tlEl.innerHTML = CLUB.historia.map(h => `
-      <li class="timeline-item reveal">
+      <li class="timeline-item ${h.highlight ? "is-highlight" : ""} ${h.image ? "has-image" : ""} reveal">
         <span class="timeline-year">${esc(h.year)}</span>
         <div class="timeline-body">
           <h3>${esc(h.title)}</h3>
           <p>${esc(h.text)}</p>
         </div>
+        ${h.image ? `<figure class="timeline-media"><img src="${esc(h.image)}" alt="${esc(h.title)}" loading="lazy" onerror="this.closest('.timeline-item').classList.remove('has-image');this.parentNode.remove()"></figure>` : ""}
       </li>`).join("");
   }
 

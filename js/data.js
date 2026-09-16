@@ -18,36 +18,68 @@ const CLUB = {
 
   /* Párrafo de introducción a la historia. */
   historiaIntro:
-    "El Fénix FS nace en Sabadell en 2018 de un grupo de amigos con una idea clara: " +
-    "crear un club de fútbol sala donde competir en serio sin perder el ambiente de equipo. " +
-    "Desde entonces no hemos dejado de crecer.",
+    "Todo empezó con una idea sencilla entre amigos: un equipo donde juntarse a jugar a fútbol sala. " +
+    "Ocho años después, el Fénix es un club con cuatro equipos senior, cantera y un sitio en la " +
+    "Primera División Catalana. Esta es la historia de cómo hemos llegado hasta aquí.",
 
-  /* Línea de tiempo. Añade o quita hitos libremente. */
+  /* Línea de tiempo.
+     - year: año o etiqueta.
+     - title / text: hito y relato.
+     - image: foto opcional en assets/img/historia/ (si no existe, no se muestra nada).
+     - highlight: true para marcar los momentos grandes (ascensos) con el punto en dorado. */
   historia: [
     {
       year: "2018",
-      title: "Nace el Fénix",
-      text: "Se funda el club en Sabadell. Primera temporada federada con un único equipo senior."
+      title: "Renace el Fénix",
+      text: "Un grupo de amigos con ganas de jugar a fútbol sala decide montar su propio equipo. De esa idea nace el Fénix: dos equipos senior en el primer año y muchas ganas de aprender.",
+      image: "assets/img/historia/2018.jpg"
     },
     {
       year: "2019",
-      title: "Consolidación",
-      text: "El club se asienta en la competición catalana y empieza a construir su identidad: negro, rojo y el ave fénix en el pecho."
+      title: "El primer ascenso",
+      text: "Con solo un año de vida, el primer equipo asciende de división en la federación en la que competíamos. La señal de que aquello iba en serio.",
+      image: "assets/img/historia/2019.jpg",
+      highlight: true
+    },
+    {
+      year: "2020",
+      title: "Resistir",
+      text: "El año de la COVID-19 pone a prueba a todos los clubes. El Fénix aguanta el golpe, mantiene el grupo unido y da el salto a la Federació Catalana de Futbol.",
+      image: "assets/img/historia/2020.jpg"
     },
     {
       year: "2021",
-      title: "Segundo equipo",
-      text: "Nace el Senior B para dar cabida a más jugadores y crear una base de futuro."
+      title: "Segunda Catalana y cantera",
+      text: "Se mantiene la estructura de Senior A y B y empezamos a construir la base del club. Y el primer equipo consigue el ascenso a Segunda División Catalana.",
+      image: "assets/img/historia/2021.jpg",
+      highlight: true
     },
     {
-      year: "2023",
-      title: "Primera Catalana",
-      text: "El Senior A alcanza la Primera División Catalana, la categoría más alta del club hasta la fecha."
+      year: "2022",
+      title: "El juvenil también sube",
+      text: "La cantera da sus primeros frutos: el juvenil consigue su ascenso. El futuro del club empieza a tomar forma.",
+      image: "assets/img/historia/2022.jpg",
+      highlight: true
+    },
+    {
+      year: "2024",
+      title: "Segundo ascenso del juvenil",
+      text: "Después de un año duro, el juvenil vuelve a subir de categoría. La constancia gana.",
+      image: "assets/img/historia/2024.jpg",
+      highlight: true
+    },
+    {
+      year: "2026",
+      title: "Primera División Catalana",
+      text: "Tras mucho esfuerzo, el primer equipo asciende a Primera División Catalana, la categoría más alta en la historia del club. Y lo celebramos con cuatro equipos senior.",
+      image: "assets/img/historia/2026.jpg",
+      highlight: true
     },
     {
       year: "Hoy",
-      title: "Seguimos creciendo",
-      text: "Dos equipos, una afición que crece y el objetivo de seguir subiendo escalones. #SIENTELFENIX"
+      title: "Lo mejor está por llegar",
+      text: "Más equipos, más afición y la misma esencia de siempre. #SIENTELFÉNIX",
+      image: ""
     }
   ],
 
