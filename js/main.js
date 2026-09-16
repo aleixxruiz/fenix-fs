@@ -322,7 +322,7 @@
             ${sorted.map((r, i) => `
               <tr class="${isClub(r.team && r.team.name) ? "is-club" : ""}">
                 <td class="fcf-pos">${started ? esc(r.position) : i + 1}</td>
-                <td class="fcf-team">${crest(r.team && r.team.logo)}<span>${esc(pretty(r.team && r.team.name))}</span></td>
+                <td class="fcf-team"><span class="fcf-team-inner">${crest(r.team && r.team.logo)}<span>${esc(pretty(r.team && r.team.name))}</span></span></td>
                 <td>${num(r.played)}</td><td>${num(r.won)}</td><td>${num(r.drawn)}</td><td>${num(r.lost)}</td>
                 <td>${num(r.goalsFor)}</td><td>${num(r.goalsAgainst)}</td>
                 <td class="fcf-pts">${Math.round(parseFloat(r.points) || 0)}</td>
