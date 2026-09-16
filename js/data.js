@@ -137,16 +137,20 @@ const CLUB = {
         { role: "Segundo entrenador", name: "Joel García" }
       ],
       plantilla: [
-        { name: "Nombre Apellido", position: "Portero", number: "1",  photo: "" },
-        { name: "Nombre Apellido", position: "Portero", number: "12", photo: "" },
-        { name: "Nombre Apellido", position: "Cierre",  number: "3",  photo: "" },
-        { name: "Nombre Apellido", position: "Cierre",  number: "4",  photo: "" },
-        { name: "Nombre Apellido", position: "Ala",     number: "6",  photo: "" },
-        { name: "Nombre Apellido", position: "Ala",     number: "7",  photo: "" },
-        { name: "Nombre Apellido", position: "Ala",     number: "8",  photo: "" },
-        { name: "Nombre Apellido", position: "Ala",     number: "11", photo: "" },
-        { name: "Nombre Apellido", position: "Pívot",   number: "9",  photo: "" },
-        { name: "Nombre Apellido", position: "Pívot",   number: "44", photo: "" }
+        { name: "Eric Márquez",        position: "Portero", number: "", photo: "assets/img/players/senior-b/eric-marquez.jpg" },
+        { name: "Alejandro Del Saz",   position: "Portero", number: "", photo: "assets/img/players/senior-b/alejandro-del-saz.jpg" },
+        { name: "Izán Carrasco",       position: "Cierre",  number: "", photo: "assets/img/players/senior-b/izan-carrasco.jpg" },
+        { name: "Aleix Ruiz",          position: "Cierre",  number: "", photo: "assets/img/players/senior-b/aleix-ruiz.jpg" },
+        { name: "Kike Nayach",         position: "Ala",     number: "", photo: "assets/img/players/senior-b/kike-nayach.jpg" },
+        { name: "Arnau Moreno",        position: "Ala",     number: "", photo: "assets/img/players/senior-b/arnau-moreno.jpg" },
+        { name: "David Cruz",          position: "Ala",     number: "", photo: "assets/img/players/senior-b/david-cruz.jpg" },
+        { name: "David Perdiguer",     position: "Ala",     number: "", photo: "assets/img/players/senior-b/david-perdiguer.jpg" },
+        { name: "Fran Alcaraz",        position: "Ala",     number: "", photo: "assets/img/players/senior-b/fran-alcaraz.jpg" },
+        { name: "Ivan Cortés",         position: "Ala",     number: "", photo: "assets/img/players/senior-b/ivan-cortes.jpg" },
+        { name: "Angel Pedraza",       position: "Ala",     number: "", photo: "assets/img/players/senior-b/angel-pedraza.jpg" },
+        { name: "Jordi Medina \"Oso\"", position: "Pívot",  number: "", photo: "assets/img/players/senior-b/jordi-medina.jpg" },
+        { name: "Agustín Conejos",     position: "Pívot",   number: "", photo: "assets/img/players/senior-b/agustin-conejos.jpg" },
+        { name: "Sergi Alberich",      position: "Pívot",   number: "", photo: "assets/img/players/senior-b/sergi-alberich.jpg" }
       ],
       pending: false
     },
