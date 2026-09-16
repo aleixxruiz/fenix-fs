@@ -919,3 +919,13 @@ body::after {
   .footer-brand, .footer-links, .footer-copy { width: 100%; justify-content: center; }
   .footer-brand { display: flex; }
 }
+
+/* v18 · Colaboradores con la misma apariencia que Patrocinadores (título y borde en rojo);
+   el CTA de patrocinio con tipografía distinta para diferenciarlo */
+.sponsors-block-collab { border-color: rgba(226,0,26,0.35); }
+.sponsors-block-collab .sponsors-subtitle { color: var(--red); }
+.sponsor-cta { border: 1px solid var(--line); background: rgba(255,255,255,0.02); }
+.sponsor-cta p {
+  font-family: var(--font-body); font-weight: 600; font-size: 1.15rem; letter-spacing: 0;
+  text-transform: none; color: var(--white); margin-bottom: 1.1rem;
+}
