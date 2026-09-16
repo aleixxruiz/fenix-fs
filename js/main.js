@@ -494,7 +494,7 @@
 
     /* Pestaña "Club": suma de todos los equipos */
     const anyData = teamsWithData.some(d => d.hasData);
-    if (anyData) {
+    {
       const merged = {};
       const balClub = { pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, fuente: "Suma de todos los equipos" };
       let any = false;
@@ -502,7 +502,7 @@
         d.players.forEach(p => { const k = normName(p.name) + "|" + d.team.name; merged[k] = merged[k] || { name: p.name, team: d.team.name, goles: 0, amarillas: 0, rojas: 0 }; merged[k].goles += p.goles; merged[k].amarillas += p.amarillas; merged[k].rojas += p.rojas; });
         if (d.bal) { any = true; ["pj", "g", "e", "p", "gf", "gc"].forEach(k => balClub[k] += d.bal[k]); }
       });
-      teamsWithData.unshift({ team: { name: "Club", category: "Todos los equipos" }, players: Object.values(merged), bal: any ? balClub : null, fromFcf: false, events: [], hasData: true, isClub: true });
+      teamsWithData.unshift({ team: { name: "Club", category: "Todos los equipos" }, players: Object.values(merged), bal: any ? balClub : null, fromFcf: false, events: [], hasData: anyData, isClub: true });
     }
 
     if (!teamsWithData.length) {
