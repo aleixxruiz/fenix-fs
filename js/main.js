@@ -287,7 +287,7 @@
   /* ---------- Datos oficiales de la FCF (clasificación + partidos) ---------- */
   const fcfEl = $("#fcf");
   const fcfGroups = (CLUB.fcfGrupos || []).filter(g => g.grupId && /^\d+$/.test(g.grupId));
-  if (fcfEl && fcfGroups.length) {
+  if (fcfEl && (CLUB.fcfGrupos || []).length) {
     const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase();
     const CLUBKEY = norm(CLUB.fcfNombreClub || "FENIX");
     const isClub = (name) => norm(name).includes(CLUBKEY);
@@ -375,19 +375,30 @@
     const tabsEl = $("#fcf-tabs"), panelsEl = $("#fcf-panels");
     const renderAll = () => {
       const data = window.FCF || {};
-      const ready = fcfGroups.filter(g => data[g.grupId]);
-      if (!ready.length) return;
+      /* Todos los equipos configurados: con datos, o con aviso si la FCF aún no ha publicado su grupo */
+      const all = (CLUB.fcfGrupos || []).map((g, i) => ({ ...g, key: g.grupId || ("pend-" + i), ready: !!(g.grupId && data[g.grupId]) }));
+      if (!all.length) return;
       fcfEl.hidden = false;
       const empty = $("#fcf-empty");
       if (empty) empty.remove();
-      tabsEl.innerHTML = ready.map((g, i) => `
-        <button type="button" class="fcf-tab ${i === 0 ? "active" : ""}" role="tab" aria-selected="${i === 0}" data-tab="${esc(g.grupId)}">
+      tabsEl.innerHTML = all.map((g, i) => `
+        <button type="button" class="fcf-tab ${i === 0 ? "active" : ""} ${g.ready ? "" : "fcf-tab-pending"}" role="tab" aria-selected="${i === 0}" data-tab="${esc(g.key)}">
           ${esc(g.equipo)}<small>${esc(g.competicion || "")}</small>
         </button>`).join("");
-      panelsEl.innerHTML = ready.map((g, i) => {
+      panelsEl.innerHTML = all.map((g, i) => {
+        if (!g.ready) {
+          return `
+        <div class="fcf-panel ${i === 0 ? "active" : ""}" data-panel="${esc(g.key)}" role="tabpanel">
+          <div class="fcf-pending">
+            <span class="fcf-pending-badge">Próximamente</span>
+            <h3>Calendario y clasificación del ${esc(g.equipo)}</h3>
+            <p>La Federació Catalana de Futbol todavía no ha publicado el grupo de ${esc(g.competicion || "esta competición")}. En cuanto lo haga, aquí aparecerán el calendario, los resultados y la clasificación, actualizados cada semana de forma automática.</p>
+          </div>
+        </div>`;
+        }
         const d = data[g.grupId];
         return `
-        <div class="fcf-panel ${i === 0 ? "active" : ""}" data-panel="${esc(g.grupId)}" role="tabpanel">
+        <div class="fcf-panel ${i === 0 ? "active" : ""}" data-panel="${esc(g.key)}" role="tabpanel">
           <div class="matches-grid">${renderMatches(d.partidos)}</div>
           <h3 class="matches-subtitle fcf-clas-title">Clasificación</h3>
           ${renderTable(d.clasificacion)}
@@ -403,6 +414,7 @@
       }));
     };
     let pending = fcfGroups.length;
+    if (!pending) { renderAll(); window.dispatchEvent(new Event("fcf:loaded")); }
     fcfGroups.forEach(g => {
       const s = document.createElement("script");
       s.src = `data/fcf/${g.grupId}.js`;
