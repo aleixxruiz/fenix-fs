@@ -68,6 +68,19 @@ Ahora mismo el formulario abre el programa de correo del visitante con el mensaj
 
 Sin hacer nada más, el formulario pasará a enviar por Formspree.
 
+## GitHub y web pública
+
+- Repositorio: https://github.com/aleixxruiz/fenix-fs
+- Web publicada con GitHub Pages: https://aleixxruiz.github.io/fenix-fs/
+
+Cada vez que se suben cambios a la rama `main`, GitHub Pages actualiza la web pública en uno o dos minutos. Flujo habitual desde esta carpeta:
+
+```
+git add -A
+git commit -m "Descripción del cambio"
+git push
+```
+
 ## Cómo publicarla en el servidor
 
 Sube el contenido completo de la carpeta (index.html, css, js, assets) a la carpeta pública del hosting (normalmente `public_html` o `www`). La web debe quedar accesible en la raíz del dominio.
