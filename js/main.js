@@ -502,7 +502,7 @@
       const btn = ev.target.closest("[data-product]");
       if (!btn || btn.getAttribute("href") !== "#contacto") return;
       const tipo = $("#tipo"), msg = $("#mensaje");
-      if (tipo) tipo.value = "Otro";
+      if (tipo) tipo.value = "Tienda";
       if (msg && !msg.value) {
         msg.value = btn.dataset.soon
           ? `Hola, avisadme cuando esté disponible en la tienda: ${btn.dataset.product}.`
@@ -631,6 +631,12 @@
         return;
       }
 
+      /* Asunto del correo con el tipo de consulta y el nombre, para que se ordene solo en la bandeja */
+      const subj = form.querySelector('input[name="subject"]');
+      if (subj) {
+        const tipoTxt = $("#tipo") && $("#tipo").selectedOptions[0] ? $("#tipo").selectedOptions[0].textContent.trim() : "";
+        subj.value = `[Web Fénix FS] ${tipoTxt || "Consulta"} · ${($("#nombre") || {}).value || ""}`.trim();
+      }
       const data = new FormData(form);
       const usingPlaceholder = form.action.includes("TU_ID_FORMSPREE");
 
