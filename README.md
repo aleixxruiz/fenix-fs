@@ -60,13 +60,7 @@ y entrar en `http://localhost:8000`.
 
 ## Formulario de contacto
 
-Ahora mismo el formulario abre el programa de correo del visitante con el mensaje preparado hacia `fenixfutsala@gmail.com`. Para que envíe directamente desde la web sin abrir el correo:
-
-1. Crea una cuenta gratuita en https://formspree.io y un formulario nuevo.
-2. Copia el ID que te da (algo como `xpzgabcd`).
-3. En `index.html`, sustituye `TU_ID_FORMSPREE` por ese ID en el atributo `action` del formulario.
-
-Sin hacer nada más, el formulario pasará a enviar por Formspree.
+El formulario envía por Web3Forms (https://web3forms.com) al correo del club. La clave de acceso está en el campo oculto `access_key` del formulario en `index.html`. El plan gratuito admite 250 mensajes al mes. Para cambiar el correo de destino se hace desde Web3Forms con esa misma clave. Solo funciona desde el navegador (la web publicada), no desde scripts.
 
 ## GitHub y web pública
 
