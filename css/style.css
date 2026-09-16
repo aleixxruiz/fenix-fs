@@ -894,3 +894,5 @@ body::after {
 .contact-text p, .contact-list { color: var(--grey); }
 .contact-direct a { color: var(--red); }
 .contact-form { background: var(--black-3); border: 1px solid var(--line); }
+.section-contact { background-image: none !important; background-color: rgba(14,14,16,0.55) !important; }
+.section-contact::before { background: transparent !important; }
