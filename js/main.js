@@ -1,0 +1,683 @@
+/* =====================================================================
+   Fénix FS · Lógica de la web
+   Lee los datos de js/data.js y pinta cada sección.
+   ===================================================================== */
+(function () {
+  "use strict";
+
+  const $ = (sel, ctx) => (ctx || document).querySelector(sel);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+  const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+
+  /* ---------- Menú móvil ---------- */
+  const toggle = $(".nav-toggle");
+  const nav = $("#main-nav");
+  if (toggle && nav) {
+    toggle.addEventListener("click", () => {
+      const open = nav.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", String(open));
+      document.body.classList.toggle("nav-open", open);
+    });
+    nav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      nav.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("nav-open");
+    }));
+  }
+
+  /* ---------- Cabecera compacta al hacer scroll ---------- */
+  const header = $(".site-header");
+  const onScroll = () => header && header.classList.toggle("scrolled", window.scrollY > 40);
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- Cifras ---------- */
+  const statsEl = $("#hero-stats");
+  if (statsEl && CLUB.stats) {
+    statsEl.innerHTML = CLUB.stats.map(s => `
+      <div class="stat">
+        <span class="stat-value">${esc(s.value)}</span>
+        <span class="stat-label">${esc(s.label)}</span>
+      </div>`).join("");
+  }
+
+  /* ---------- Historia ---------- */
+  const introEl = $("#historia-intro");
+  if (introEl) introEl.textContent = CLUB.historiaIntro || "";
+
+  const tlEl = $("#timeline");
+  if (tlEl && CLUB.historia) {
+    tlEl.innerHTML = CLUB.historia.map(h => `
+      <li class="timeline-item reveal">
+        <span class="timeline-year">${esc(h.year)}</span>
+        <div class="timeline-body">
+          <h3>${esc(h.title)}</h3>
+          <p>${esc(h.text)}</p>
+        </div>
+      </li>`).join("");
+  }
+
+  /* ---------- Equipos ---------- */
+  const teamsEl = $("#teams");
+  if (teamsEl && CLUB.equipos) {
+    const staffList = (s) => {
+      if (!s) return "";
+      if (typeof s === "string") return `<p class="card-meta">${esc(s)}</p>`;
+      if (!s.length) return "";
+      return `<ul class="team-staff">${s.map(p => `<li><span>${esc(p.role)}</span>${esc(p.name)}</li>`).join("")}</ul>`;
+    };
+    const teamMedia = (t) => {
+      const imgs = (t.images && t.images.length) ? t.images : (t.image ? [t.image] : []);
+      if (imgs.length <= 1) {
+        return imgs.length ? `<img src="${esc(imgs[0])}" alt="${esc(t.name)}" loading="lazy" onerror="this.remove()">` : "";
+      }
+      return `
+        <div class="team-gallery" data-index="0">
+          ${imgs.map((src, i) => `<img src="${esc(src)}" alt="${esc(t.name)} · foto ${i + 1}" loading="lazy" class="${i === 0 ? "active" : ""}" onerror="this.remove()">`).join("")}
+          <button type="button" class="gal-btn gal-prev" aria-label="Foto anterior">&#8249;</button>
+          <button type="button" class="gal-btn gal-next" aria-label="Foto siguiente">&#8250;</button>
+          <div class="gal-dots">${imgs.map((_, i) => `<span class="${i === 0 ? "active" : ""}"></span>`).join("")}</div>
+        </div>`;
+    };
+    teamsEl.innerHTML = CLUB.equipos.map((t, idx) => `
+      <article class="card team-card ${t.pending ? "team-pending" : ""} reveal" data-team="${idx}" tabindex="0" role="button" aria-label="Ver plantilla de ${esc(t.name)}">
+        <div class="team-media">
+          ${teamMedia(t)}
+          <span class="team-badge">${t.pending ? "En preparación" : esc(t.tagline || "")}</span>
+        </div>
+        <div class="card-body">
+          <p class="card-kicker">${esc(t.category)}</p>
+          <h3>${esc(t.name)}</h3>
+          <p>${esc(t.description)}</p>
+          ${staffList(t.staff)}
+          ${t.pending ? `<p class="card-meta">Pendiente de confirmación. ¿Quieres formar parte? <a href="#contacto">Escríbenos</a>.</p>` : ""}
+          <span class="team-open">Ver plantilla <i>&#8250;</i></span>
+        </div>
+      </article>`).join("");
+  }
+
+  /* ---------- Ventana emergente compartida (equipos y noticias) ---------- */
+  const modal = $("#team-modal");
+  const openModal = ({ kicker = "", title = "", tagline = "", body = "", mode = "" }) => {
+    if (!modal) return;
+    $("#modal-category").textContent = kicker;
+    $("#modal-title").textContent = title;
+    $("#modal-tagline").textContent = tagline;
+    $("#modal-body").innerHTML = body;
+    modal.querySelector(".modal-panel").className = "modal-panel" + (mode ? " modal-" + mode : "");
+    modal.hidden = false;
+    document.body.classList.add("modal-open");
+    modal.querySelector(".modal-panel").scrollTop = 0;
+    modal.querySelector(".modal-close").focus();
+  };
+  const closeModal = () => {
+    if (!modal) return;
+    modal.hidden = true;
+    document.body.classList.remove("modal-open");
+  };
+  if (modal) {
+    modal.addEventListener("click", (ev) => { if (ev.target.closest("[data-close]")) closeModal(); });
+    document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && !modal.hidden) closeModal(); });
+  }
+
+  /* ---------- Pop-up de plantilla ---------- */
+  if (modal && teamsEl) {
+    const POSITIONS = ["Portero", "Cierre", "Ala", "Pívot"];
+    const normPos = (p) => {
+      const s = String(p || "").toLowerCase().replace(/í/g, "i");
+      if (s.startsWith("por")) return "Portero";
+      if (s.startsWith("cie")) return "Cierre";
+      if (s.startsWith("ala")) return "Ala";
+      if (s.startsWith("piv")) return "Pívot";
+      return "Otros";
+    };
+    const playerCard = (p) => `
+      <li class="player">
+        <div class="player-photo" data-initials="${esc(initials(p.name))}">
+          ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">` : ""}
+          ${p.number ? `<span class="player-number">${esc(p.number)}</span>` : ""}
+        </div>
+        <span class="player-name">${esc(p.name)}</span>
+      </li>`;
+    const openTeam = (idx) => {
+      const t = CLUB.equipos[idx];
+      if (!t) return;
+      const groups = {};
+      (t.plantilla || []).forEach(p => { const k = normPos(p.position); (groups[k] = groups[k] || []).push(p); });
+      const order = POSITIONS.concat(Object.keys(groups).filter(k => !POSITIONS.includes(k)));
+      let html = "";
+      if (t.staff && t.staff.length) {
+        html += `<div class="modal-staff">${t.staff.map(s => `<span><em>${esc(s.role)}</em>${esc(s.name)}</span>`).join("")}</div>`;
+      }
+      const sections = order.filter(k => groups[k] && groups[k].length);
+      if (sections.length) {
+        html += sections.map(k => `
+          <section class="position-group">
+            <h3 class="position-title">${esc(k)}${k === "Otros" ? "" : "s"}<span>${groups[k].length}</span></h3>
+            <ul class="players">${groups[k].map(playerCard).join("")}</ul>
+          </section>`).join("");
+      } else {
+        html += `<p class="modal-empty">${t.pending ? "Plantilla en construcción. ¿Quieres formar parte del equipo?" : "Plantilla pendiente de publicar."} <a href="#contacto" data-close>Escríbenos</a>.</p>`;
+      }
+      openModal({ kicker: t.category || "", title: t.name || "", tagline: t.tagline || "", body: html, mode: "team" });
+    };
+    teamsEl.addEventListener("click", (ev) => {
+      if (ev.target.closest(".gal-btn, .gal-dots, a")) return;
+      const card = ev.target.closest("[data-team]");
+      if (card) openTeam(+card.dataset.team);
+    });
+    teamsEl.addEventListener("keydown", (ev) => {
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      const card = ev.target.closest("[data-team]");
+      if (card && ev.target === card) { ev.preventDefault(); openTeam(+card.dataset.team); }
+    });
+  }
+
+  /* Galerías de equipo: flechas y puntos */
+  document.querySelectorAll(".team-gallery").forEach(gal => {
+    const imgs = () => Array.from(gal.querySelectorAll("img"));
+    const dots = Array.from(gal.querySelectorAll(".gal-dots span"));
+    const show = (i) => {
+      const list = imgs();
+      if (!list.length) return;
+      const n = (i + list.length) % list.length;
+      gal.dataset.index = n;
+      list.forEach((im, k) => im.classList.toggle("active", k === n));
+      dots.forEach((d, k) => d.classList.toggle("active", k === n));
+    };
+    gal.querySelector(".gal-prev").addEventListener("click", () => show(+gal.dataset.index - 1));
+    gal.querySelector(".gal-next").addEventListener("click", () => show(+gal.dataset.index + 1));
+    dots.forEach((d, k) => d.addEventListener("click", () => show(k)));
+    /* Deslizar con el dedo en móvil */
+    let x0 = null;
+    gal.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
+    gal.addEventListener("touchend", e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) show(+gal.dataset.index + (dx < 0 ? 1 : -1));
+    });
+  });
+
+  /* ---------- Miembros ---------- */
+  const membersEl = $("#members");
+  if (membersEl && CLUB.miembros) {
+    membersEl.innerHTML = CLUB.miembros.map(m => `
+      <article class="member reveal">
+        <div class="member-avatar" data-initials="${esc(initials(m.name))}">
+          ${m.photo ? `<img src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy" onerror="this.remove()">` : ""}
+        </div>
+        <h3>${esc(m.name)}</h3>
+        <p>${esc(m.role)}</p>
+      </article>`).join("");
+  }
+
+  /* ---------- Patrocinadores ---------- */
+  const sponsorsEl = $("#sponsors");
+  const collabEl = $("#collaborators");
+  const collabTitle = $("#collaborators-title");
+  if (sponsorsEl && CLUB.patrocinadores) {
+    const isColor = (c) => /^#[0-9a-f]{3,8}$/i.test(c || "");
+    const render = (list) => list.map(s => {
+      const hasUrl = s.url && s.url !== "#";
+      const tag = hasUrl ? "a" : "div";
+      const attrs = hasUrl ? `href="${esc(s.url)}" target="_blank" rel="noopener"` : "";
+      const tile = isColor(s.bg);
+      return `
+      <${tag} class="sponsor ${tile ? "sponsor-tile" : ""} reveal" ${attrs} title="${esc(s.name)}" ${tile ? `style="background:${s.bg}"` : ""}>
+        <img src="${esc(s.logo)}" alt="${esc(s.name)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:this.alt}))">
+      </${tag}>`;
+    }).join("");
+    const main = CLUB.patrocinadores.filter(s => s.tier !== "colaborador");
+    const collab = CLUB.patrocinadores.filter(s => s.tier === "colaborador");
+    sponsorsEl.innerHTML = `<div class="sponsors-grid">${render(main)}</div>`;
+    if (collabEl) {
+      collabEl.innerHTML = collab.length ? `<div class="sponsors-grid sponsors-grid-collab">${render(collab)}</div>` : "";
+      if (collabTitle) collabTitle.hidden = collab.length === 0;
+    }
+  }
+
+  /* ---------- Partidos ---------- */
+  const isFenix = (name) => /f[eé]nix/i.test(name || "");
+  const fmtDate = (iso, withWeekday) => {
+    const d = new Date(iso + "T00:00:00");
+    if (isNaN(d)) return esc(iso);
+    const opts = withWeekday
+      ? { weekday: "short", day: "numeric", month: "short" }
+      : { day: "numeric", month: "short", year: "numeric" };
+    return d.toLocaleDateString("es-ES", opts);
+  };
+  const matchCard = (m) => {
+    const played = !!m.resultado;
+    const [gl, gv] = played ? m.resultado.split("-").map(s => s.trim()) : ["", ""];
+    const fenixLocal = isFenix(m.local);
+    let outcome = "";
+    if (played && gl !== undefined && gv !== undefined && !isNaN(gl) && !isNaN(gv)) {
+      const f = fenixLocal ? +gl : +gv, r = fenixLocal ? +gv : +gl;
+      outcome = f > r ? "win" : f < r ? "loss" : "draw";
+    }
+    return `
+      <article class="match ${played ? "match-played " + outcome : "match-next"} reveal">
+        <div class="match-meta">
+          <span class="match-team">${esc(m.equipo)}</span>
+          <span class="match-comp">${esc(m.competicion || "")}</span>
+        </div>
+        <div class="match-main">
+          <span class="match-side ${fenixLocal ? "is-fenix" : ""}">${esc(m.local)}</span>
+          <span class="match-score">${played ? `${esc(gl)}<i>-</i>${esc(gv)}` : `<small>${esc(m.hora || "")}</small>`}</span>
+          <span class="match-side ${!fenixLocal ? "is-fenix" : ""}">${esc(m.visitante)}</span>
+        </div>
+        <div class="match-foot">
+          <span>${fmtDate(m.fecha, true)}</span>
+          ${m.lugar ? `<span>${esc(m.lugar)}</span>` : ""}
+        </div>
+      </article>`;
+  };
+  const nextEl = $("#next-matches");
+  const lastEl = $("#last-results");
+  if (nextEl && lastEl && CLUB.partidos) {
+    const byDate = (a, b) => a.fecha.localeCompare(b.fecha);
+    const next = CLUB.partidos.filter(m => !m.resultado).sort(byDate).slice(0, 5);
+    const last = CLUB.partidos.filter(m => m.resultado).sort(byDate).reverse().slice(0, 5);
+    nextEl.innerHTML = next.length ? next.map(matchCard).join("") : `<p class="matches-empty">Calendario pendiente de publicar.</p>`;
+    lastEl.innerHTML = last.length ? last.map(matchCard).join("") : `<p class="matches-empty">Aún no hay resultados esta temporada.</p>`;
+  }
+  /* ---------- Datos oficiales de la FCF (clasificación + partidos) ---------- */
+  const fcfEl = $("#fcf");
+  const fcfGroups = (CLUB.fcfGrupos || []).filter(g => g.grupId && /^\d+$/.test(g.grupId));
+  if (fcfEl && fcfGroups.length) {
+    const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase();
+    const CLUBKEY = norm(CLUB.fcfNombreClub || "FENIX");
+    const isClub = (name) => norm(name).includes(CLUBKEY);
+    const LOGO = "https://files.fcf.cat/escudos/clubes/escudos/";
+    const crest = (file, name) => file
+      ? `<img class="fcf-crest" src="${LOGO}${esc(file)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'fcf-crest fcf-crest-empty'}))">`
+      : `<span class="fcf-crest fcf-crest-empty"></span>`;
+    const pretty = (name) => String(name || "").replace(/\s+/g, " ").trim()
+      .toLowerCase().replace(/(^|\s|-|'|\.)(\S)/g, (m, p, c) => p + c.toUpperCase())
+      .replace(/\b(Fs|Cfs|Fc|Ae|Ce|Ue|Cf)\b/g, s => s.toUpperCase()).replace(/\bEsp\./g, "Esp.");
+    const num = (v) => parseInt(v, 10) || 0;
+    const fmtDT = (iso) => {
+      if (!iso || iso.startsWith("0000")) return { d: "Fecha por confirmar", t: "" };
+      const d = new Date(iso.replace(" ", "T"));
+      if (isNaN(d)) return { d: iso, t: "" };
+      return {
+        d: d.toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" }),
+        t: d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })
+      };
+    };
+
+    const renderTable = (clas) => {
+      const rows = (clas && clas.data) || [];
+      if (!rows.length) return `<p class="matches-empty">Clasificación pendiente de publicar.</p>`;
+      const started = rows.some(r => num(r.played) > 0);
+      const sorted = started ? rows.slice().sort((a, b) => num(a.position) - num(b.position)) : rows;
+      return `
+        <div class="fcf-table-wrap">
+        <table class="fcf-table">
+          <thead><tr><th>#</th><th class="fcf-th-team">Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th class="fcf-th-pts">Pts</th></tr></thead>
+          <tbody>
+            ${sorted.map((r, i) => `
+              <tr class="${isClub(r.team && r.team.name) ? "is-club" : ""}">
+                <td class="fcf-pos">${started ? esc(r.position) : i + 1}</td>
+                <td class="fcf-team">${crest(r.team && r.team.logo)}<span>${esc(pretty(r.team && r.team.name))}</span></td>
+                <td>${num(r.played)}</td><td>${num(r.won)}</td><td>${num(r.drawn)}</td><td>${num(r.lost)}</td>
+                <td>${num(r.goalsFor)}</td><td>${num(r.goalsAgainst)}</td>
+                <td class="fcf-pts">${Math.round(parseFloat(r.points) || 0)}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+        </div>
+        ${started ? "" : `<p class="fcf-note">La liga aún no ha empezado: orden provisional de la FCF.</p>`}`;
+    };
+
+    const matchRow = (m, played) => {
+      const home = isClub(m.NOMBRE_CASA), away = isClub(m.NOMBRE_FUERA);
+      const dt = fmtDT(m.COMIENZO1);
+      let outcome = "";
+      if (played) {
+        const gh = num(m.GOLES_CASA), ga = num(m.GOLES_FUERA);
+        const f = home ? gh : ga, r = home ? ga : gh;
+        outcome = f > r ? "win" : f < r ? "loss" : "draw";
+      }
+      return `
+        <article class="match fcf-match ${played ? "match-played " + outcome : "match-next"}">
+          <div class="match-meta"><span class="match-team">Jornada ${esc(m.JORNADA)}</span><span>${esc(dt.d)}</span></div>
+          <div class="match-main">
+            <span class="match-side ${home ? "is-fenix" : ""}">${crest(m.ESCUDO_CASA)}${esc(pretty(m.NOMBRE_CASA))}</span>
+            <span class="match-score">${played ? `${num(m.GOLES_CASA)}<i>-</i>${num(m.GOLES_FUERA)}` : `<small>${esc(dt.t || "--:--")}</small>`}</span>
+            <span class="match-side ${away ? "is-fenix" : ""}">${esc(pretty(m.NOMBRE_FUERA))}${crest(m.ESCUDO_FUERA)}</span>
+          </div>
+          ${m.CAMPO ? `<div class="match-foot"><span>${esc(pretty(m.CAMPO))}</span></div>` : ""}
+        </article>`;
+    };
+
+    const renderMatches = (partidos) => {
+      const all = [];
+      Object.keys(partidos || {}).forEach(j => (partidos[j] || []).forEach(m => all.push(m)));
+      const ours = all.filter(m => isClub(m.NOMBRE_CASA) || isClub(m.NOMBRE_FUERA));
+      const played = ours.filter(m => m.GOLES_CASA !== null && m.GOLES_CASA !== "" && m.GOLES_FUERA !== null && m.GOLES_FUERA !== "");
+      const next = ours.filter(m => !played.includes(m)).sort((a, b) => String(a.COMIENZO1).localeCompare(String(b.COMIENZO1))).slice(0, 4);
+      const last = played.sort((a, b) => String(b.COMIENZO1).localeCompare(String(a.COMIENZO1))).slice(0, 4);
+      return `
+        <div class="matches-col">
+          <h3 class="matches-subtitle">Próximos partidos</h3>
+          <div class="matches">${next.length ? next.map(m => matchRow(m, false)).join("") : `<p class="matches-empty">Calendario pendiente de publicar.</p>`}</div>
+        </div>
+        <div class="matches-col">
+          <h3 class="matches-subtitle">Últimos resultados</h3>
+          <div class="matches">${last.length ? last.map(m => matchRow(m, true)).join("") : `<p class="matches-empty">Aún no hay resultados esta temporada.</p>`}</div>
+        </div>`;
+    };
+
+    const tabsEl = $("#fcf-tabs"), panelsEl = $("#fcf-panels");
+    const renderAll = () => {
+      const data = window.FCF || {};
+      const ready = fcfGroups.filter(g => data[g.grupId]);
+      if (!ready.length) return;
+      fcfEl.hidden = false;
+      const empty = $("#fcf-empty");
+      if (empty) empty.remove();
+      tabsEl.innerHTML = ready.map((g, i) => `
+        <button type="button" class="fcf-tab ${i === 0 ? "active" : ""}" role="tab" aria-selected="${i === 0}" data-tab="${esc(g.grupId)}">
+          ${esc(g.equipo)}<small>${esc(g.competicion || "")}</small>
+        </button>`).join("");
+      panelsEl.innerHTML = ready.map((g, i) => {
+        const d = data[g.grupId];
+        return `
+        <div class="fcf-panel ${i === 0 ? "active" : ""}" data-panel="${esc(g.grupId)}" role="tabpanel">
+          <div class="matches-grid">${renderMatches(d.partidos)}</div>
+          <h3 class="matches-subtitle fcf-clas-title">Clasificación</h3>
+          ${renderTable(d.clasificacion)}
+          <div class="fcf-foot">
+            <span>Datos oficiales FCF · actualizado ${esc(d.actualizado || "")}</span>
+            ${g.url ? `<a href="${esc(g.url)}" target="_blank" rel="noopener" class="btn btn-outline btn-small">Ver en la FCF</a>` : ""}
+          </div>
+        </div>`;
+      }).join("");
+      tabsEl.querySelectorAll(".fcf-tab").forEach(b => b.addEventListener("click", () => {
+        tabsEl.querySelectorAll(".fcf-tab").forEach(x => { x.classList.toggle("active", x === b); x.setAttribute("aria-selected", x === b); });
+        panelsEl.querySelectorAll(".fcf-panel").forEach(p => p.classList.toggle("active", p.dataset.panel === b.dataset.tab));
+      }));
+    };
+    let pending = fcfGroups.length;
+    fcfGroups.forEach(g => {
+      const s = document.createElement("script");
+      s.src = `data/fcf/${g.grupId}.js`;
+      s.onload = s.onerror = () => { if (--pending === 0) renderAll(); };
+      document.head.appendChild(s);
+    });
+  }
+
+  const linksEl = $("#matches-links");
+  if (linksEl && CLUB.partidosEnlaces && CLUB.partidosEnlaces.length) {
+    linksEl.innerHTML = CLUB.partidosEnlaces.map(l =>
+      `<a href="${esc(l.url)}" target="_blank" rel="noopener" class="btn btn-outline btn-small">${esc(l.label)}</a>`).join("");
+  }
+
+  /* ---------- Noticias ---------- */
+  const newsEl = $("#news");
+  if (newsEl && CLUB.noticias) {
+    newsEl.innerHTML = CLUB.noticias.map((n, idx) => `
+      <article class="card news-card reveal" data-news="${idx}" tabindex="0" role="button" aria-label="Leer: ${esc(n.titulo)}">
+        <div class="news-media">
+          ${n.imagen ? `<img src="${esc(n.imagen)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
+        </div>
+        <div class="card-body">
+          <p class="card-kicker">${fmtDate(n.fecha)}</p>
+          <h3>${esc(n.titulo)}</h3>
+          <p>${esc(n.resumen)}</p>
+          <span class="news-more">Leer más <i>&#8250;</i></span>
+        </div>
+      </article>`).join("");
+
+    /* Pop-up de noticia: texto completo sin salir de la web */
+    const openNews = (idx) => {
+      const n = CLUB.noticias[idx];
+      if (!n) return;
+      const paragraphs = String(n.contenido || n.resumen || "")
+        .split(/\n\s*\n|\n/).map(s => s.trim()).filter(Boolean)
+        .map(p => `<p>${esc(p)}</p>`).join("");
+      const ext = n.url && /^https?:/i.test(n.url);
+      let link = "";
+      if (n.url) {
+        const label = n.urlTexto || (ext ? (/instagram\.com/i.test(n.url) ? "Ver en Instagram" : "Ver enlace") : "Ir a la sección");
+        link = ext
+          ? `<a class="btn btn-primary btn-small" href="${esc(n.url)}" target="_blank" rel="noopener">${esc(label)}</a>`
+          : `<a class="btn btn-primary btn-small" href="${esc(n.url)}" data-close>${esc(label)}</a>`;
+      }
+      const body = `
+        ${n.imagen ? `<div class="news-modal-media"><img src="${esc(n.imagen)}" alt="" onerror="this.parentNode.remove()"></div>` : ""}
+        <div class="news-modal-text">${paragraphs}</div>
+        ${link ? `<div class="news-modal-actions">${link}</div>` : ""}`;
+      openModal({ kicker: fmtDate(n.fecha), title: n.titulo || "", tagline: n.subtitulo || "", body, mode: "news" });
+    };
+    newsEl.addEventListener("click", (ev) => {
+      const card = ev.target.closest("[data-news]");
+      if (card) openNews(+card.dataset.news);
+    });
+    newsEl.addEventListener("keydown", (ev) => {
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      const card = ev.target.closest("[data-news]");
+      if (card && ev.target === card) { ev.preventDefault(); openNews(+card.dataset.news); }
+    });
+  }
+
+  /* ---------- Tienda ---------- */
+  const shopEl = $("#shop");
+  const shopSoon = CLUB.tiendaEstado === "proximamente";
+  if (shopEl && CLUB.tienda) {
+    if (shopSoon) {
+      const sec = $("#tienda");
+      const cfg = CLUB.tiendaProximamente || {};
+      sec.classList.add("shop-soon");
+      const k = sec.querySelector(".section-kicker"), t = sec.querySelector(".section-title"), i = sec.querySelector(".section-intro");
+      if (k && cfg.kicker) k.textContent = cfg.kicker;
+      if (t && cfg.titulo) t.textContent = cfg.titulo;
+      if (i && cfg.intro) i.textContent = cfg.intro;
+    }
+    shopEl.innerHTML = CLUB.tienda.map(p => {
+      const href = shopSoon ? "#contacto" : (p.url || "#contacto");
+      const ext = !shopSoon && /^https?:/i.test(p.url || "");
+      const label = shopSoon ? "Avísame" : (p.url ? "Comprar" : "Lo quiero");
+      return `
+      <article class="card product ${shopSoon ? "product-soon" : ""} reveal">
+        <div class="product-media">
+          ${p.imagen ? `<img src="${esc(p.imagen)}" alt="${esc(p.nombre)}" loading="lazy" onerror="this.remove()">` : ""}
+          ${shopSoon ? `<span class="product-badge">Próximamente</span>` : ""}
+        </div>
+        <div class="card-body">
+          <h3>${esc(p.nombre)}</h3>
+          ${shopSoon ? `<p class="product-price product-price-soon">Precio por anunciar</p>` : `<p class="product-price">${esc(p.precio)}</p>`}
+          <a href="${esc(href)}" ${ext ? 'target="_blank" rel="noopener"' : ""} class="btn ${shopSoon ? "btn-outline" : "btn-primary"} btn-small" data-product="${esc(p.nombre)}" ${shopSoon ? 'data-soon="1"' : ""}>
+            ${label}
+          </a>
+        </div>
+      </article>`;
+    }).join("");
+    /* Si el producto no tiene enlace de compra (o la tienda está en "próximamente"),
+       rellenamos el formulario de contacto con el producto. */
+    shopEl.addEventListener("click", (ev) => {
+      const btn = ev.target.closest("[data-product]");
+      if (!btn || btn.getAttribute("href") !== "#contacto") return;
+      const tipo = $("#tipo"), msg = $("#mensaje");
+      if (tipo) tipo.value = "Otro";
+      if (msg && !msg.value) {
+        msg.value = btn.dataset.soon
+          ? `Hola, avisadme cuando esté disponible en la tienda: ${btn.dataset.product}.`
+          : `Hola, quiero pedir: ${btn.dataset.product}. Talla: ___. Cantidad: 1.`;
+      }
+    });
+  }
+  const shopNote = $("#shop-note");
+  if (shopNote) shopNote.textContent = shopSoon ? ((CLUB.tiendaProximamente || {}).nota || "") : (CLUB.tiendaNota || "");
+
+  /* ---------- Instagram ---------- */
+  const igEl = $("#instagram-feed");
+  if (igEl) {
+    const posts = (CLUB.instagramPosts || []).filter(u => /^https:\/\/(www\.)?instagram\.com\/(p|reel)\/[\w-]+\/?/.test(u));
+    const profile = String(CLUB.instagramPerfil || "").replace(/^@/, "").trim();
+    let html = "";
+    if (profile && /^[\w.]+$/.test(profile)) {
+      /* Widget de perfil: cabecera propia + cuadrícula en vivo (últimas 6 publicaciones)
+         recortada del embed oficial de Instagram. */
+      const st = CLUB.instagramStats || {};
+      const stat = (v, label) => v ? `<div class="ig-stat"><strong>${esc(v)}</strong><span>${esc(label)}</span></div>` : "";
+      const url = `https://www.instagram.com/${esc(profile)}/`;
+      html += `
+        <div class="ig-widget">
+          <div class="ig-head">
+            <a class="ig-avatar" href="${url}" target="_blank" rel="noopener"><img src="assets/img/logo.png" alt=""></a>
+            <div class="ig-names">
+              <a class="ig-name" href="${url}" target="_blank" rel="noopener">${esc(CLUB.instagramNombre || profile)}</a>
+              <a class="ig-handle" href="${url}" target="_blank" rel="noopener">@${esc(profile)}</a>
+            </div>
+            <div class="ig-stats">
+              ${stat(st.publicaciones, "Publicaciones")}${stat(st.seguidores, "Seguidores")}${stat(st.siguiendo, "Siguiendo")}
+            </div>
+            <a class="ig-follow" href="${url}" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2M12 0C8.7 0 8.3 0 7.1.1 5.8.1 4.9.3 4.1.6c-.8.3-1.5.7-2.1 1.4C1.3 2.6.9 3.3.6 4.1.3 4.9.1 5.8.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.1 1.3.3 2.2.6 3 .3.8.7 1.5 1.4 2.1.6.7 1.3 1.1 2.1 1.4.8.3 1.7.5 3 .6 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c1.3-.1 2.2-.3 3-.6.8-.3 1.5-.7 2.1-1.4.7-.6 1.1-1.3 1.4-2.1.3-.8.5-1.7.6-3 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.1-1.3-.3-2.2-.6-3-.3-.8-.7-1.5-1.4-2.1-.6-.7-1.3-1.1-2.1-1.4-.8-.3-1.7-.5-3-.6C15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9z"/></svg>
+              Seguir
+            </a>
+          </div>
+          ${posts.length ? `
+          <div class="ig-posts">
+            ${posts.slice(0, Number(CLUB.instagramMax) || 6).map(u => {
+              const clean = u.replace(/[?#].*$/, "").replace(/\/?$/, "/");
+              return `
+              <div class="ig-post">
+                <iframe class="ig-post-frame" src="${esc(clean)}embed/" title="Publicación de Instagram" loading="lazy" allowtransparency="true" scrolling="no"></iframe>
+                <a class="ig-post-link" href="${esc(clean)}" target="_blank" rel="noopener" aria-label="Ver publicación en Instagram"></a>
+              </div>`;
+            }).join("")}
+          </div>` : `
+          <div class="ig-grid">
+            <iframe class="instagram-profile-frame" src="https://www.instagram.com/${esc(profile)}/embed/" title="Instagram de @${esc(profile)}" loading="lazy" allowtransparency="true" scrolling="no"></iframe>
+          </div>`}
+          <a class="ig-grid-link" href="${url}" target="_blank" rel="noopener">Ver todas las publicaciones en Instagram &#8250;</a>
+        </div>`;
+    }
+    if (html) {
+      igEl.innerHTML = html;
+      /* Posts individuales: cada embed lleva una cabecera de ~54 px que ocultamos
+         para dejar solo la imagen (formato 4:5). */
+      const postFrames = igEl.querySelectorAll(".ig-post-frame");
+      if (postFrames.length) {
+        const OFF = Number(CLUB.instagramPostOffset) || 54;
+        const BASE = 250; /* por debajo de este ancho el embed no encoge: lo escalamos */
+        const fitPosts = () => {
+          postFrames.forEach(f => {
+            const w = f.parentNode.getBoundingClientRect().width || BASE;
+            const base = Math.max(w, BASE);
+            const scale = w / base;
+            f.style.width = base + "px";
+            f.style.height = Math.round(OFF + base * 1.25 + 260) + "px";
+            f.style.transformOrigin = "0 0";
+            f.style.transform = scale < 1 ? `scale(${scale})` : "";
+            f.style.top = (-OFF * scale) + "px";
+          });
+        };
+        fitPosts();
+        window.addEventListener("resize", fitPosts, { passive: true });
+      }
+      /* Cuadrícula automática del perfil (si no hay posts en la lista): el embed lleva
+         su propia cabecera (~150 px) y 2 filas de fotos de ancho/3. */
+      const frame = igEl.querySelector(".instagram-profile-frame");
+      const grid = igEl.querySelector(".ig-grid");
+      if (frame && grid) {
+        const fit = () => {
+          const w = grid.getBoundingClientRect().width || 540;
+          const HEADER = Number(CLUB.instagramEmbedOffset) || (w < 500 ? 148 : 158);
+          const rows = (w / 3) * 2 + 2;
+          grid.style.height = Math.round(rows) + "px";
+          frame.style.height = Math.round(HEADER + rows + 40) + "px";
+          frame.style.top = (-HEADER) + "px";
+        };
+        fit();
+        window.addEventListener("resize", fit, { passive: true });
+      }
+    } else {
+      igEl.innerHTML = `
+        <a class="instagram-placeholder reveal" href="https://www.instagram.com/fenix_fs/" target="_blank" rel="noopener">
+          <img src="assets/img/logo.png" alt="" width="120" height="150">
+          <span class="instagram-handle">@fenix_fs</span>
+          <span class="instagram-hint">Fotos, vídeos y resultados en nuestro Instagram</span>
+        </a>`;
+    }
+  }
+
+  /* ---------- Animación de aparición ---------- */
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+  } else {
+    document.querySelectorAll(".reveal").forEach(el => el.classList.add("in"));
+  }
+
+  /* ---------- Formulario ---------- */
+  const form = $("#contact-form");
+  const status = $("#form-status");
+  if (form) {
+    form.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      status.textContent = "";
+      status.className = "form-status";
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const data = new FormData(form);
+      const usingPlaceholder = form.action.includes("TU_ID_FORMSPREE");
+
+      /* Si aún no se ha configurado Formspree, abrimos el correo del usuario
+         con el mensaje ya redactado (funciona sin servidor). */
+      if (usingPlaceholder) {
+        const subject = `[Web Fénix FS] ${data.get("tipo")} · ${data.get("nombre")}`;
+        const body =
+          `Nombre: ${data.get("nombre")}\n` +
+          `Email: ${data.get("email")}\n` +
+          `Teléfono: ${data.get("telefono") || "-"}\n` +
+          `Tipo: ${data.get("tipo")}\n\n` +
+          `${data.get("mensaje")}`;
+        window.location.href = `mailto:fenixfutsala@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        status.textContent = "Se ha abierto tu programa de correo con el mensaje preparado. ¡Gracias!";
+        status.classList.add("ok");
+        return;
+      }
+
+      const btn = form.querySelector("button[type=submit]");
+      const btnLabel = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          body: data,
+          headers: { "Accept": "application/json" }
+        });
+        if (res.ok) {
+          form.reset();
+          status.textContent = "¡Mensaje enviado! Te contestaremos lo antes posible.";
+          status.classList.add("ok");
+        } else {
+          throw new Error("Respuesta no válida");
+        }
+      } catch (err) {
+        status.textContent = "No se ha podido enviar. Escríbenos a fenixfutsala@gmail.com.";
+        status.classList.add("error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = btnLabel;
+      }
+    });
+  }
+
+  /* ---------- Año del pie ---------- */
+  const year = $("#year");
+  if (year) year.textContent = new Date().getFullYear();
+})();

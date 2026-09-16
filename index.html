@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fénix FS · Club de Fútbol Sala de Sabadell</title>
+  <meta name="description" content="Fénix FS, club de fútbol sala de Sabadell fundado en 2018. Conoce nuestra historia, equipos, patrocinadores y cómo ayudarnos a crecer. #SIENTELFENIX">
+  <meta property="og:title" content="Fénix FS · Fútbol Sala Sabadell">
+  <meta property="og:description" content="Club de fútbol sala de Sabadell. #SIENTELFENIX">
+  <meta property="og:image" content="assets/img/bg-dark.jpg">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ===== CABECERA ===== -->
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="#top" class="brand">
+        <img src="assets/img/logo.png" alt="Escudo Fénix FS" class="brand-logo" onerror="this.style.display='none'">
+        <span class="brand-name brand-hashtag">#Sientel<span>Fenix</span></span>
+      </a>
+      <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-nav">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav" id="main-nav">
+        <a href="#top">Inicio</a>
+        <a href="#club">Club</a>
+        <a href="#equipos">Equipos</a>
+        <a href="#partidos">Partidos</a>
+        <a href="#noticias">Noticias</a>
+        <a href="#tienda">Tienda</a>
+        <a href="#contacto" class="nav-cta">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="container hero-content">
+      <div class="hero-text-block">
+        <p class="hero-kicker">Sabadell · Fútbol Sala · Desde 2018</p>
+        <h1 class="hero-title">Fénix <span>FS</span></h1>
+        <p class="hero-text">
+          Un club nacido de la pasión por el fútbol sala. Competimos, crecemos y formamos
+          equipo dentro y fuera de la pista.
+        </p>
+        <div class="hero-actions">
+          <a href="#equipos" class="btn btn-primary">Nuestros equipos</a>
+          <a href="#contacto" class="btn btn-outline">Ayúdanos a crecer</a>
+        </div>
+      </div>
+      <div class="hero-crest">
+        <img src="assets/img/logo.png" alt="Escudo Fénix Futsal Sabadell" width="600" height="750">
+      </div>
+    </div>
+    <div class="hero-stats container" id="hero-stats"></div>
+  </section>
+
+  <!-- ===== CLUB: historia, equipación, personas y patrocinadores ===== -->
+  <div id="club">
+
+  <!-- ===== HISTORIA ===== -->
+  <section class="section" id="historia">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Nuestra historia</p>
+        <h2 class="section-title">De las cenizas a la pista</h2>
+        <p class="section-intro" id="historia-intro"></p>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
+    </div>
+  </section>
+
+  <!-- ===== EQUIPACIÓN 26/27 ===== -->
+  <section class="section section-kit" id="equipacion">
+    <div class="container kit-inner">
+      <div class="kit-media reveal">
+        <img src="assets/img/equipacion-26-27.jpg" alt="Nueva equipación Fénix FS temporada 26/27" loading="lazy" width="1023" height="1537">
+      </div>
+      <div class="kit-text">
+        <p class="section-kicker">Temporada 26/27</p>
+        <h2 class="section-title">Nueva piel,<br>misma esencia</h2>
+        <p class="section-intro">
+          Presentamos la equipación oficial del Fénix FS para la temporada 2026/27.
+          Negro para la primera, blanco para la segunda, y la franja roja y dorada
+          que nos identifica en cada partido.
+        </p>
+        <ul class="kit-list">
+          <li><span>Primera</span> Negra con franja roja y dorada</li>
+          <li><span>Segunda</span> Blanca con franja roja y dorada</li>
+          <li><span>Escudo</span> Fénix Futsal Sabadell en el pecho</li>
+        </ul>
+        <p class="kit-hashtag">#Sientel<span>Fenix</span></p>
+        <a href="https://www.instagram.com/fenix_fs/" target="_blank" rel="noopener" class="btn btn-outline">Verla en Instagram</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MIEMBROS ===== -->
+  <section class="section" id="miembros">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">El club</p>
+        <h2 class="section-title">Las personas que lo hacen posible</h2>
+        <p class="section-intro">Directiva, cuerpo técnico y colaboradores que empujan el club cada semana.</p>
+      </div>
+      <div class="grid grid-members" id="members"></div>
+    </div>
+  </section>
+
+  <!-- ===== PATROCINADORES ===== -->
+  <section class="section section-alt" id="patrocinadores">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Patrocinadores</p>
+        <h2 class="section-title">Quienes creen en nosotros</h2>
+        <p class="section-intro">Gracias a su apoyo podemos competir, equiparnos y seguir creciendo.</p>
+      </div>
+      <div class="sponsors" id="sponsors"></div>
+      <h3 class="sponsors-subtitle" id="collaborators-title">Colaboradores</h3>
+      <div class="sponsors sponsors-collab" id="collaborators"></div>
+      <div class="sponsor-cta">
+        <p>¿Quieres que tu marca acompañe al Fénix esta temporada?</p>
+        <a href="#contacto" class="btn btn-primary">Quiero patrocinar</a>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /#club -->
+
+  <!-- ===== EQUIPOS ===== -->
+  <section class="section" id="equipos">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Equipos</p>
+        <h2 class="section-title">Los equipos del club</h2>
+        <p class="section-intro">Cada temporada crecemos. Estos son los equipos que defienden la camiseta del Fénix.</p>
+      </div>
+      <div class="grid grid-teams" id="teams"></div>
+    </div>
+  </section>
+
+  <!-- ===== PARTIDOS ===== -->
+  <section class="section section-alt" id="partidos">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Partidos</p>
+        <h2 class="section-title">Calendario y resultados</h2>
+        <p class="section-intro">Próximos partidos, resultados y clasificación oficial de la FCF. Ven a animar al Fénix.</p>
+      </div>
+      <div class="fcf" id="fcf" hidden>
+        <div class="fcf-tabs" id="fcf-tabs" role="tablist"></div>
+        <div class="fcf-panels" id="fcf-panels"></div>
+      </div>
+      <p class="matches-empty" id="fcf-empty">Calendario y clasificación disponibles en cuanto la FCF publique los grupos.</p>
+    </div>
+  </section>
+
+  <!-- ===== NOTICIAS ===== -->
+  <section class="section" id="noticias">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Noticias</p>
+        <h2 class="section-title">Actualidad del club</h2>
+        <p class="section-intro">Lo último que pasa en el Fénix: fichajes, eventos, resultados destacados y más.</p>
+      </div>
+      <div class="grid grid-news" id="news"></div>
+    </div>
+  </section>
+
+  <!-- ===== TIENDA ===== -->
+  <section class="section section-alt" id="tienda">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Tienda</p>
+        <h2 class="section-title">Viste de Fénix</h2>
+        <p class="section-intro">Equipación oficial y merchandising del club. Cada compra ayuda a que el Fénix siga creciendo.</p>
+      </div>
+      <div class="grid grid-shop" id="shop"></div>
+      <p class="shop-note" id="shop-note"></p>
+    </div>
+  </section>
+
+  <!-- ===== INSTAGRAM ===== -->
+  <section class="section section-instagram" id="instagram">
+    <div class="container">
+      <div class="section-head section-head-center">
+        <p class="section-kicker">Síguenos</p>
+        <h2 class="section-title">@fenix_fs en Instagram</h2>
+        <p class="section-intro">El día a día del club, partido a partido.</p>
+      </div>
+      <div class="instagram-grid" id="instagram-feed"></div>
+      <div class="instagram-cta">
+        <a href="https://www.instagram.com/fenix_fs/" target="_blank" rel="noopener" class="btn btn-outline">Seguir a @fenix_fs</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACTO / FORMULARIO ===== -->
+  <section class="section section-contact" id="contacto">
+    <div class="container contact-inner">
+      <div class="contact-text">
+        <p class="section-kicker">Contacto</p>
+        <h2 class="section-title">Forma parte del Fénix</h2>
+        <p>
+          Seas empresa, jugador, entrenador o simplemente alguien que quiere echar una mano,
+          hay un sitio para ti en el club. Cuéntanos cómo quieres colaborar y te contestaremos lo antes posible.
+        </p>
+        <ul class="contact-list">
+          <li><strong>Patrocinio:</strong> visibilidad en equipaciones, pista y redes.</li>
+          <li><strong>Jugar o entrenar:</strong> únete a alguno de nuestros equipos.</li>
+          <li><strong>Voluntariado:</strong> ayuda en partidos, eventos y comunicación.</li>
+        </ul>
+        <p class="contact-direct">
+          También puedes escribirnos directamente a
+          <a href="mailto:fenixfutsala@gmail.com">fenixfutsala@gmail.com</a>
+        </p>
+      </div>
+
+      <form class="contact-form" id="contact-form" action="https://formspree.io/f/TU_ID_FORMSPREE" method="POST" novalidate>
+        <div class="form-row">
+          <label for="nombre">Nombre *</label>
+          <input type="text" id="nombre" name="nombre" required autocomplete="name">
+        </div>
+        <div class="form-row">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required autocomplete="email">
+        </div>
+        <div class="form-row">
+          <label for="telefono">Teléfono</label>
+          <input type="tel" id="telefono" name="telefono" autocomplete="tel">
+        </div>
+        <div class="form-row">
+          <label for="tipo">¿Cómo quieres colaborar? *</label>
+          <select id="tipo" name="tipo" required>
+            <option value="">Selecciona una opción</option>
+            <option value="Patrocinio">Quiero patrocinar</option>
+            <option value="Jugar">Quiero jugar</option>
+            <option value="Entrenar">Quiero entrenar / cuerpo técnico</option>
+            <option value="Voluntariado">Quiero ayudar como voluntario</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="mensaje">Mensaje *</label>
+          <textarea id="mensaje" name="mensaje" rows="5" required placeholder="Cuéntanos un poco más..."></textarea>
+        </div>
+        <div class="form-row form-check">
+          <input type="checkbox" id="privacidad" name="privacidad" required>
+          <label for="privacidad">Acepto que el club use mis datos para responder a esta solicitud.</label>
+        </div>
+        <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off">
+        <button type="submit" class="btn btn-primary btn-block btn-send">Siente el Fénix</button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== PIE ===== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="assets/img/logo.png" alt="" class="footer-logo" width="80" height="100">
+        <span class="brand-name">Fénix <span>FS</span></span>
+        <p>Club de fútbol sala · Sabadell · Fundado en 2018</p>
+        <p class="footer-hashtag">#Sientel<span>Fenix</span></p>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.instagram.com/fenix_fs/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/fenixsbdfs/" target="_blank" rel="noopener">Facebook</a>
+        <a href="mailto:fenixfutsala@gmail.com">Email</a>
+      </div>
+      <p class="footer-copy">© <span id="year"></span> Fénix FS. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- ===== POP-UP DE PLANTILLA (se rellena desde js/main.js) ===== -->
+  <div class="modal" id="team-modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel">
+      <button type="button" class="modal-close" data-close aria-label="Cerrar">&times;</button>
+      <div class="modal-head">
+        <p class="section-kicker" id="modal-category"></p>
+        <h2 class="section-title" id="modal-title"></h2>
+        <p class="modal-tagline" id="modal-tagline"></p>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <!-- Script oficial de Instagram para los posts incrustados (solo carga si hay posts en data.js) -->
+
+</body>
+</html>
