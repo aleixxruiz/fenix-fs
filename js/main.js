@@ -489,20 +489,35 @@
         });
       }
       const list = Object.values(players);
-      if (!list.length && !bal) return;
-      teamsWithData.push({ team: t, players: list, bal, fromFcf, events });
+      teamsWithData.push({ team: t, players: list, bal, fromFcf, events, hasData: !!(list.length || bal) });
     });
+
+    /* Pestaña "Club": suma de todos los equipos */
+    const anyData = teamsWithData.some(d => d.hasData);
+    if (anyData) {
+      const merged = {};
+      const balClub = { pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, fuente: "Suma de todos los equipos" };
+      let any = false;
+      teamsWithData.forEach(d => {
+        d.players.forEach(p => { const k = normName(p.name) + "|" + d.team.name; merged[k] = merged[k] || { name: p.name, team: d.team.name, goles: 0, amarillas: 0, rojas: 0 }; merged[k].goles += p.goles; merged[k].amarillas += p.amarillas; merged[k].rojas += p.rojas; });
+        if (d.bal) { any = true; ["pj", "g", "e", "p", "gf", "gc"].forEach(k => balClub[k] += d.bal[k]); }
+      });
+      teamsWithData.unshift({ team: { name: "Club", category: "Todos los equipos" }, players: Object.values(merged), bal: any ? balClub : null, fromFcf: false, events: [], hasData: true, isClub: true });
+    }
 
     if (!teamsWithData.length) {
       if (statsEmpty) statsEmpty.hidden = false;
     } else {
+      /* Silueta de jugador para quien no tiene foto */
+      const silhouetteHtml = `<svg class="scorer-silhouette" viewBox="0 0 200 260" aria-hidden="true"><path fill="currentColor" d="M100 18c-24 0-42 20-42 46s18 50 42 50 42-24 42-50-18-46-42-46zm-58 118c-16 6-26 20-30 40l-8 84h192l-8-84c-4-20-14-34-30-40l-28-10c-9 8-19 12-30 12s-21-4-30-12z"/></svg>`;
+      window.silhouette = window.silhouette || (() => { const t = document.createElement("template"); t.innerHTML = silhouetteHtml; return t.content.firstChild; });
       const card = (p, i, teamName) => {
-        const ph = photoFor(p.name, teamName);
+        const ph = photoFor(p.name, p.team || teamName);
         return `
         <div class="scorer ${i === 0 ? "scorer-top" : ""}">
-          <div class="scorer-media">${ph ? `<img src="${esc(ph)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">` : `<span class="scorer-initials">${esc(initials(p.name))}</span>`}</div>
+          <div class="scorer-media">${ph ? `<img src="${esc(ph)}" alt="${esc(p.name)}" loading="lazy" onerror="this.replaceWith(silhouette())">` : silhouetteHtml}</div>
           <div class="scorer-info">
-            <span class="scorer-rank">${i + 1}</span>
+            <span class="scorer-rank">${i + 1}${p.team ? ` · ${esc(p.team)}` : ""}</span>
             <span class="scorer-name">${esc(p.name)}</span>
             <span class="scorer-goals"><strong>${p.goles}</strong> ${p.goles === 1 ? "gol" : "goles"}</span>
           </div>
@@ -514,6 +529,29 @@
         const scorers = d.players.filter(p => p.goles > 0).sort((a, b) => b.goles - a.goles).slice(0, 5);
         const cards = d.players.filter(p => p.amarillas || p.rojas).sort((a, b) => (b.rojas * 3 + b.amarillas) - (a.rojas * 3 + a.amarillas));
         const b = d.bal;
+        if (!d.hasData) {
+          return `
+        <div class="stats-panel ${i === 0 ? "active" : ""}" data-spanel="${i}">
+          <div class="stat-tiles stat-tiles-empty">
+            ${["Partidos", "Victorias", "Empates", "Derrotas", "Goles a favor", "Goles en contra"].map(l => `<div class="stat-tile"><strong>–</strong><span>${l}</span></div>`).join("")}
+          </div>
+          <div class="stats-grid">
+            <div class="stats-col">
+              <h3 class="matches-subtitle">Máximos goleadores</h3>
+              <div class="scorers">${[0, 1, 2].map(k => `
+                <div class="scorer scorer-placeholder ${k === 0 ? "scorer-top" : ""}">
+                  <div class="scorer-media">${silhouetteHtml}</div>
+                  <div class="scorer-info"><span class="scorer-rank">${k + 1}</span><span class="scorer-name">Por decidir</span><span class="scorer-goals"><strong>0</strong> goles</span></div>
+                </div>`).join("")}</div>
+            </div>
+            <div class="stats-col">
+              <h3 class="matches-subtitle">Tarjetas</h3>
+              <p class="matches-empty">Sin datos todavía.</p>
+            </div>
+          </div>
+          <p class="stats-source">Las estadísticas de ${esc(d.team.name)} aparecerán con los primeros partidos de la temporada.</p>
+        </div>`;
+        }
         return `
         <div class="stats-panel ${i === 0 ? "active" : ""}" data-spanel="${i}">
           ${b ? `

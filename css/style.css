@@ -1104,3 +1104,14 @@ body::after { background: rgba(11,11,12,0.35); }
   .scorer-top .scorer-goals strong { font-size: 2.2rem; }
   .stat-tile strong { font-size: 1.5rem; }
 }
+
+/* v23 · Estadísticas: pestaña Club, siluetas y equipos sin datos */
+.scorer-silhouette { width: 70%; max-height: 90%; color: rgba(255,255,255,0.14); align-self: flex-end; }
+.scorer-top .scorer-silhouette { width: 65%; }
+.scorer-placeholder { opacity: 0.75; border-style: dashed; }
+.scorer-placeholder .scorer-name { color: var(--grey-dark); }
+.scorer-placeholder .scorer-goals strong { color: var(--grey-dark); }
+.stat-tiles-empty .stat-tile strong { color: var(--grey-dark); }
+.stats-tabs .fcf-tab:first-child { border-color: rgba(214,166,58,0.5); }
+.stats-tabs .fcf-tab:first-child.active { background: var(--gold); border-color: var(--gold); color: var(--black); }
+.stats-tabs .fcf-tab:first-child.active small { color: rgba(0,0,0,0.6); }
