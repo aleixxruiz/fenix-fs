@@ -30,7 +30,7 @@ Las imágenes de `assets/img/` están optimizadas para web (JPG comprimido, PNG 
 Todo el contenido variable está en `js/data.js`. Abre el archivo con cualquier editor de texto y cambia los valores. Cada sección tiene comentarios explicando qué hace.
 
 - **Cifras del hero**: bloque `stats`.
-- **Historia**: `historiaIntro` y la lista `historia` (año, título, texto).
+- **Historia**: `historiaIntro` y la lista `historia` (año, título, texto). Cada hito admite `image` con una foto en `assets/img/historia/` (por ejemplo `2021.jpg`; si el archivo no existe no se muestra nada) y `highlight: true` para marcar los ascensos en dorado.
 - **Equipos**: lista `equipos`. Para añadir uno, copia un bloque `{ ... }` y cámbialo. Una foto va en `image`; varias fotos van en `images` como lista y la tarjeta muestra una galería con flechas y deslizamiento en móvil. Fotos en `assets/img/teams/` (ideal 1400 px de ancho, JPG). `pending: true` marca un equipo aún no confirmado.
 - **Plantillas (pop-up)**: al hacer clic en un equipo se abre una ventana con sus jugadores por posición. Se rellenan en la lista `plantilla` de cada equipo con `name`, `position` (Portero, Cierre, Ala o Pívot), `number` (dorsal) y `photo`. Las fotos de jugadores van en `assets/img/players/senior-a/`, `senior-b/`, etc. (cuadradas, por ejemplo 400x400). Si `photo` está vacía o el archivo no existe, salen las iniciales.
 - **Miembros**: lista `miembros`. Si no hay foto, se muestran las iniciales.
