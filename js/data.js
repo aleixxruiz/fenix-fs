@@ -102,7 +102,10 @@ const CLUB = {
       tagline: "El presente del club",
       category: "Primera División Catalana",
       description: "Compite en la Primera División Catalana de fútbol sala tras un ascenso histórico. El equipo que lleva el nombre del Fénix a lo más alto.",
-      image: "assets/img/teams/senior-a.jpg",
+      images: [
+        "assets/img/teams/senior-a-2.jpg",
+        "assets/img/teams/senior-a-1.jpg"
+      ],
       staff: [
         { role: "Entrenador", name: "Ciscu Venegas" }
       ],
