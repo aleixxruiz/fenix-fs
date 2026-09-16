@@ -866,3 +866,24 @@ body.modal-open { overflow: hidden; }
 .sponsors-block-collab .sponsor img { max-height: 140px; max-width: 260px; opacity: 1; }
 .sponsors-block-collab .sponsors-grid, .sponsors-grid-collab { justify-content: center; gap: 1.5rem 3rem; }
 @media (max-width: 720px) { .sponsors-block-collab .sponsor img { max-height: 84px; max-width: 160px; } }
+
+/* =====================================================================
+   v16 · Fondo negro con textura en toda la página
+   ===================================================================== */
+body { background: var(--black); position: relative; }
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1;
+  background: var(--black) url("../assets/img/bg-dark.jpg") center / cover no-repeat;
+}
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: -1;
+  background: rgba(11,11,12,0.42);
+}
+.hero-bg { display: none; }
+.hero { background: transparent; }
+.section { background: transparent; }
+.section-alt { background: rgba(14,14,16,0.55); backdrop-filter: blur(2px); }
+.section-kit { background: rgba(14,14,16,0.55); }
+.section-instagram { background: transparent; }
+.site-footer { background: rgba(11,11,12,0.7); }
+.team-media, .news-media { background-color: var(--black-3); }
