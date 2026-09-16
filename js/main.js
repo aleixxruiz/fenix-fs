@@ -406,10 +406,155 @@
     fcfGroups.forEach(g => {
       const s = document.createElement("script");
       s.src = `data/fcf/${g.grupId}.js`;
-      s.onload = s.onerror = () => { if (--pending === 0) renderAll(); };
+      s.onload = s.onerror = () => { if (--pending === 0) { renderAll(); window.dispatchEvent(new Event("fcf:loaded")); } };
       document.head.appendChild(s);
     });
   }
+
+  /* ---------- Estadísticas: goles, tarjetas y balance (FCF + eventos manuales) ---------- */
+  const statsTabs = $("#stats-tabs"), statsPanels = $("#stats-panels"), statsEmpty = $("#stats-empty");
+  const renderStats = () => {
+    if (!statsTabs || !statsPanels) return;
+    const activeTab = (statsTabs.querySelector(".fcf-tab.active") || {}).textContent;
+    const normName = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/\s+/g, " ").trim();
+    const clubKey = normName(CLUB.fcfNombreClub || "FENIX");
+    const isClubTeam = (name) => normName(name).includes(clubKey);
+    const num = (v) => parseInt(v, 10) || 0;
+    const titleCase = (s) => String(s || "").toLowerCase().replace(/(^|\s|-|')(\S)/g, (m, p, c) => p + c.toUpperCase());
+
+    /* Foto de un jugador: por 'jugadoresFotos' o por la plantilla del equipo */
+    const photoFor = (name, teamName) => {
+      const map = CLUB.jugadoresFotos || {};
+      const k = Object.keys(map).find(x => normName(x) === normName(name));
+      if (k) return map[k];
+      const team = (CLUB.equipos || []).find(t => t.name === teamName);
+      const p = team && (team.plantilla || []).find(x => normName(x.name) === normName(name));
+      return p && p.photo ? p.photo : "";
+    };
+
+    /* Extrae goleadores/sanciones de los datos de la FCF de forma tolerante al formato */
+    const pick = (o, keys) => { for (const k of keys) { if (o && o[k] != null && o[k] !== "") return o[k]; } return undefined; };
+    const flatten = (v) => Array.isArray(v) ? v.flatMap(flatten) : (v && typeof v === "object" ? Object.values(v).flatMap(flatten).concat([v]) : []);
+    const fcfPlayers = (fcf) => {
+      const out = {};
+      const add = (name, field, n) => { if (!name || !n) return; const k = normName(name); out[k] = out[k] || { name: titleCase(name), goles: 0, amarillas: 0, rojas: 0 }; out[k][field] += n; };
+      flatten(fcf.goleadores || []).forEach(o => {
+        const team = pick(o, ["EQUIPO", "NOMBRE_EQUIPO", "equipo", "team", "NOMBRE_EQUIP"]);
+        if (team && !isClubTeam(team)) return;
+        const name = pick(o, ["JUGADOR", "NOMBRE", "nombre", "name", "NOM"]);
+        const g = num(pick(o, ["GOLES", "GOLS", "goles", "goals", "TOTAL"]));
+        if (name && g) add(name, "goles", g);
+      });
+      flatten(fcf.sanciones || {}).forEach(o => {
+        const team = pick(o, ["EQUIPO", "NOMBRE_EQUIPO", "equipo", "team"]);
+        if (team && !isClubTeam(team)) return;
+        const name = pick(o, ["JUGADOR", "NOMBRE", "nombre", "name", "NOM"]);
+        if (!name) return;
+        const am = num(pick(o, ["AMARILLAS", "GROGUES", "amarillas", "yellow"]));
+        const ro = num(pick(o, ["ROJAS", "VERMELLES", "rojas", "red"]));
+        const tipo = String(pick(o, ["TIPO", "TIPUS", "tipo", "type"]) || "").toUpperCase();
+        if (am) add(name, "amarillas", am);
+        if (ro) add(name, "rojas", ro);
+        if (!am && !ro && tipo) add(name, /ROJ|VERM|RED/.test(tipo) ? "rojas" : "amarillas", 1);
+      });
+      return out;
+    };
+
+    const teamsWithData = [];
+    (CLUB.equipos || []).forEach(t => {
+      const grp = (CLUB.fcfGrupos || []).find(g => g.equipo === t.name && g.grupId);
+      const fcf = grp && window.FCF && window.FCF[grp.grupId];
+      const events = (CLUB.eventos || []).filter(e => e.equipo === t.name);
+      let players = fcf ? fcfPlayers(fcf) : {};
+      const fromFcf = Object.keys(players).length > 0;
+      if (!fromFcf) {
+        events.forEach(e => {
+          const add = (obj, field) => Object.entries(obj || {}).forEach(([name, n]) => {
+            const k = normName(name); players[k] = players[k] || { name, goles: 0, amarillas: 0, rojas: 0 }; players[k][field] += num(n);
+          });
+          add(e.goles, "goles"); add(e.amarillas, "amarillas"); add(e.rojas, "rojas");
+        });
+      }
+      /* Balance del equipo: fila de la FCF si hay liga jugada; si no, suma de eventos */
+      let bal = null;
+      const row = fcf && fcf.clasificacion && (fcf.clasificacion.data || []).find(r => isClubTeam(r.team && r.team.name));
+      if (row && num(row.played) > 0) {
+        bal = { pj: num(row.played), g: num(row.won), e: num(row.drawn), p: num(row.lost), gf: num(row.goalsFor), gc: num(row.goalsAgainst), fuente: "Liga · FCF" };
+      } else if (events.length) {
+        bal = { pj: 0, g: 0, e: 0, p: 0, gf: 0, gc: 0, fuente: "Resultados anotados" };
+        events.forEach(e => {
+          const m = String(e.resultado || "").match(/(\d+)\s*-\s*(\d+)/); if (!m) return;
+          const home = isClubTeam(e.local); const f = home ? +m[1] : +m[2], r = home ? +m[2] : +m[1];
+          bal.pj++; bal.gf += f; bal.gc += r; if (f > r) bal.g++; else if (f < r) bal.p++; else bal.e++;
+        });
+      }
+      const list = Object.values(players);
+      if (!list.length && !bal) return;
+      teamsWithData.push({ team: t, players: list, bal, fromFcf, events });
+    });
+
+    if (!teamsWithData.length) {
+      if (statsEmpty) statsEmpty.hidden = false;
+    } else {
+      const card = (p, i, teamName) => {
+        const ph = photoFor(p.name, teamName);
+        return `
+        <div class="scorer ${i === 0 ? "scorer-top" : ""}">
+          <div class="scorer-media">${ph ? `<img src="${esc(ph)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">` : `<span class="scorer-initials">${esc(initials(p.name))}</span>`}</div>
+          <div class="scorer-info">
+            <span class="scorer-rank">${i + 1}</span>
+            <span class="scorer-name">${esc(p.name)}</span>
+            <span class="scorer-goals"><strong>${p.goles}</strong> ${p.goles === 1 ? "gol" : "goles"}</span>
+          </div>
+        </div>`;
+      };
+      statsTabs.innerHTML = teamsWithData.map((d, i) => `
+        <button type="button" class="fcf-tab ${i === 0 ? "active" : ""}" role="tab" aria-selected="${i === 0}" data-stab="${i}">${esc(d.team.name)}<small>${esc(d.team.category || "")}</small></button>`).join("");
+      statsPanels.innerHTML = teamsWithData.map((d, i) => {
+        const scorers = d.players.filter(p => p.goles > 0).sort((a, b) => b.goles - a.goles).slice(0, 5);
+        const cards = d.players.filter(p => p.amarillas || p.rojas).sort((a, b) => (b.rojas * 3 + b.amarillas) - (a.rojas * 3 + a.amarillas));
+        const b = d.bal;
+        return `
+        <div class="stats-panel ${i === 0 ? "active" : ""}" data-spanel="${i}">
+          ${b ? `
+          <div class="stat-tiles">
+            <div class="stat-tile"><strong>${b.pj}</strong><span>Partidos</span></div>
+            <div class="stat-tile stat-win"><strong>${b.g}</strong><span>Victorias</span></div>
+            <div class="stat-tile stat-draw"><strong>${b.e}</strong><span>Empates</span></div>
+            <div class="stat-tile stat-loss"><strong>${b.p}</strong><span>Derrotas</span></div>
+            <div class="stat-tile"><strong>${b.gf}</strong><span>Goles a favor</span></div>
+            <div class="stat-tile"><strong>${b.gc}</strong><span>Goles en contra</span></div>
+          </div>` : ""}
+          <div class="stats-grid">
+            <div class="stats-col">
+              <h3 class="matches-subtitle">Máximos goleadores</h3>
+              ${scorers.length ? `<div class="scorers">${scorers.map((p, k) => card(p, k, d.team.name)).join("")}</div>` : `<p class="matches-empty">Aún no hay goles registrados.</p>`}
+            </div>
+            <div class="stats-col">
+              <h3 class="matches-subtitle">Tarjetas</h3>
+              ${cards.length ? `<ul class="cards-list">${cards.map(p => `
+                <li><span class="cards-name">${esc(p.name)}</span>
+                  <span class="cards-count">${p.amarillas ? `<i class="card-y"></i>${p.amarillas}` : ""}${p.rojas ? `<i class="card-r"></i>${p.rojas}` : ""}</span></li>`).join("")}</ul>` : `<p class="matches-empty">Sin tarjetas. Así da gusto.</p>`}
+              ${d.events.length ? `
+              <h3 class="matches-subtitle stats-sub2">Últimos resultados anotados</h3>
+              <ul class="events-list">${d.events.slice().sort((a, b) => String(b.fecha).localeCompare(String(a.fecha))).slice(0, 4).map(e => `
+                <li><span>${esc(e.local)} <strong>${esc(e.resultado)}</strong> ${esc(e.visitante)}</span><small>${esc(e.competicion || "")} · ${esc(e.fecha)}</small></li>`).join("")}</ul>` : ""}
+            </div>
+          </div>
+          <p class="stats-source">Fuente: ${d.fromFcf ? "datos oficiales de la FCF" : "resultados anotados por el club"}${b ? ` · balance: ${esc(b.fuente)}` : ""}.</p>
+        </div>`;
+      }).join("");
+      statsTabs.querySelectorAll("[data-stab]").forEach(btn => btn.addEventListener("click", () => {
+        statsTabs.querySelectorAll("[data-stab]").forEach(x => { x.classList.toggle("active", x === btn); x.setAttribute("aria-selected", x === btn); });
+        statsPanels.querySelectorAll(".stats-panel").forEach(p => p.classList.toggle("active", p.dataset.spanel === btn.dataset.stab));
+      }));
+      if (statsEmpty) statsEmpty.hidden = true;
+      const keep = [...statsTabs.querySelectorAll("[data-stab]")].find(b => b.textContent === activeTab);
+      if (keep) keep.click();
+    }
+  };
+  renderStats();
+  window.addEventListener("fcf:loaded", renderStats);
 
   const linksEl = $("#matches-links");
   if (linksEl && CLUB.partidosEnlaces && CLUB.partidosEnlaces.length) {

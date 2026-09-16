@@ -226,6 +226,40 @@ const CLUB = {
   fcfNombreClub: "FENIX",
 
   /* =====================================================================
+     ESTADÍSTICAS (goles y tarjetas por jugador, balance del equipo)
+     Se calculan solas a partir de dos fuentes, sin tocar nada más:
+       1) La FCF: goleadores y sanciones oficiales del grupo (los descarga la
+          misma automatización de partidos). Cuando existen, mandan.
+       2) 'eventos': resultados que anotéis vosotros (amistosos, copa, o
+          mientras la FCF no publique). Se suman automáticamente.
+     Fotos de jugadores: por nombre en 'jugadoresFotos' (o la 'photo' de la
+     plantilla del equipo, si el nombre coincide). Ruta en assets/img/players/.
+     ===================================================================== */
+  jugadoresFotos: {
+    "Goleador 1": "assets/img/players/senior-a/goleador-1.png",
+    "Goleador 2": "assets/img/players/senior-a/goleador-2.png"
+  },
+
+  /* Un bloque por partido. goles / amarillas / rojas: { "Nombre jugador": cantidad }.
+     'equipo' debe coincidir con el nombre del equipo en 'equipos' y 'fcfGrupos'. */
+  eventos: [
+    {
+      fecha: "2026-09-13", equipo: "Senior A", competicion: "Pretemporada",
+      local: "Fénix FS", visitante: "Egara FS B", resultado: "5-1",
+      goles: { "Goleador 1": 3, "Goleador 2": 2 },
+      amarillas: { "Goleador 2": 1 },
+      rojas: {}
+    },
+    {
+      fecha: "2026-09-06", equipo: "Senior A", competicion: "Pretemporada",
+      local: "Fénix FS", visitante: "Rival de pretemporada", resultado: "3-3",
+      goles: { "Goleador 1": 2, "Goleador 2": 1 },
+      amarillas: {},
+      rojas: {}
+    }
+  ],
+
+  /* =====================================================================
      NOTICIAS. La más reciente primero. Al hacer clic se abre un pop-up con
      la noticia completa sin salir de la web.
        · fecha: AAAA-MM-DD

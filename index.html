@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=26">
+  <link rel="stylesheet" href="css/style.css?v=27">
 </head>
 <body>
 
@@ -31,6 +31,7 @@
         <a href="#club">Club</a>
         <a href="#equipos">Equipos</a>
         <a href="#partidos">Partidos</a>
+        <a href="#estadisticas">Estadísticas</a>
         <a href="#noticias">Noticias</a>
         <a href="#tienda">Tienda</a>
         <a href="#contacto" class="nav-cta">Contacto</a>
@@ -163,6 +164,20 @@
         <div class="fcf-panels" id="fcf-panels"></div>
       </div>
       <p class="matches-empty" id="fcf-empty">Calendario y clasificación disponibles en cuanto la FCF publique los grupos.</p>
+    </div>
+  </section>
+
+  <!-- ===== ESTADÍSTICAS ===== -->
+  <section class="section" id="estadisticas">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Estadísticas</p>
+        <h2 class="section-title">Los números del Fénix</h2>
+        <p class="section-intro">Goles, tarjetas y balance de cada equipo. Se actualizan solos con cada resultado.</p>
+      </div>
+      <div class="stats-tabs" id="stats-tabs" role="tablist"></div>
+      <div class="stats-panels" id="stats-panels"></div>
+      <p class="matches-empty" id="stats-empty" hidden>Las estadísticas aparecerán con los primeros partidos de la temporada.</p>
     </div>
   </section>
 
@@ -307,8 +322,8 @@
     </div>
   </div>
 
-  <script src="js/data.js?v=25"></script>
-  <script src="js/main.js?v=25"></script>
+  <script src="js/data.js?v=27"></script>
+  <script src="js/main.js?v=27"></script>
   <!-- Script oficial de Instagram para los posts incrustados (solo carga si hay posts en data.js) -->
 
 </body>

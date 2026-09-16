@@ -15,6 +15,7 @@ import path from "node:path";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dataJs = readFileSync(path.join(root, "js", "data.js"), "utf8");
+const TEMP = (dataJs.match(/temporadaId=(\d+)/) || [, "22"])[1];
 const grupos = [...new Set([...dataJs.matchAll(/grupId:\s*"(\d+)"/g)].map(m => m[1]))];
 if (!grupos.length) { console.log("No hay grupos configurados en js/data.js (fcfGrupos)."); process.exit(0); }
 
@@ -51,6 +52,8 @@ let ok = 0;
 for (const g of grupos) {
   process.stdout.write(`Grupo ${g} ... `);
   const clas = getJson(`https://www.fcf.cat/api/competition/classificacio?grupId=${g}`);
+  const gole = getJson(`https://www.fcf.cat/api/competition/goleadores?grupId=${g}&temporada=${TEMP}`) || "[]";
+  const sanc = getJson(`https://www.fcf.cat/api/competition/sanciones?grupId=${g}&temporada=${TEMP}`) || "{}";
   const part = getJson(`https://www.fcf.cat/api/competition/partidos?grupId=${g}`);
   if (!clas || !part) { console.log("ERROR (sin datos, se mantiene el archivo anterior)"); continue; }
   const content =

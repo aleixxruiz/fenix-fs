@@ -1049,3 +1049,58 @@ body::after {
 .section-alt, .section-kit, .section-contact, .section-instagram { background: transparent !important; backdrop-filter: none !important; }
 .site-footer { background: transparent; }
 body::after { background: rgba(11,11,12,0.35); }
+
+/* =====================================================================
+   v22 · Estadísticas: balance, goleadores con foto recortada y tarjetas
+   ===================================================================== */
+.stats-tabs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.8rem; }
+.stats-panel { display: none; }
+.stats-panel.active { display: block; }
+.stat-tiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.8rem; margin-bottom: 2rem; }
+.stat-tile { background: var(--black-3); border: 1px solid var(--line); border-radius: 12px; padding: 0.9rem 0.6rem; text-align: center; border-top: 3px solid var(--grey-dark); }
+.stat-tile strong { display: block; font-family: var(--font-title); font-size: 2rem; line-height: 1; color: var(--white); }
+.stat-tile span { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey); }
+.stat-tile.stat-win { border-top-color: #4ccf6f; }
+.stat-tile.stat-draw { border-top-color: var(--gold); }
+.stat-tile.stat-loss { border-top-color: var(--red); }
+.stats-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 2.5rem; }
+.stats-sub2 { margin-top: 2rem; }
+.scorers { display: grid; gap: 0.9rem; }
+.scorer {
+  display: grid; grid-template-columns: 110px 1fr; align-items: end; gap: 1rem; min-height: 120px;
+  background: linear-gradient(135deg, rgba(226,0,26,0.16), rgba(29,29,33,0.9) 60%), var(--black-3);
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; position: relative;
+}
+.scorer-top { grid-template-columns: 170px 1fr; min-height: 200px; background: linear-gradient(135deg, rgba(226,0,26,0.35), rgba(29,29,33,0.92) 65%), var(--black-3); border-color: rgba(226,0,26,0.45); }
+.scorer-media { align-self: stretch; position: relative; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+.scorer-media img { max-height: 100%; width: auto; max-width: 100%; object-fit: contain; object-position: bottom; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6)); transform: translateY(2px); }
+.scorer-top .scorer-media img { max-height: 200px; }
+.scorer-initials { font-family: var(--font-display); font-size: 2.4rem; color: var(--grey); margin-bottom: 1rem; }
+.scorer-info { padding: 1rem 1.2rem 1rem 0; display: grid; gap: 0.1rem; align-content: end; }
+.scorer-rank { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.2em; color: var(--gold); }
+.scorer-rank::before { content: "#"; }
+.scorer-name { font-family: var(--font-title); font-size: 1.5rem; text-transform: uppercase; color: var(--white); line-height: 1.05; }
+.scorer-top .scorer-name { font-size: 2.2rem; }
+.scorer-goals { color: var(--grey); font-size: 0.9rem; }
+.scorer-goals strong { font-family: var(--font-title); font-size: 1.9rem; color: var(--red); margin-right: 0.3rem; }
+.scorer-top .scorer-goals strong { font-size: 3rem; }
+.cards-list, .events-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.cards-list li, .events-list li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.7rem 0.9rem; background: var(--black-3); border: 1px solid var(--line); border-radius: 10px; }
+.cards-name { font-weight: 600; }
+.cards-count { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-display); font-size: 1.1rem; }
+.cards-count i { display: inline-block; width: 11px; height: 15px; border-radius: 2px; margin-left: 0.6rem; }
+.cards-count .card-y { background: #f2c94c; }
+.cards-count .card-r { background: var(--red); }
+.events-list li { flex-direction: column; align-items: flex-start; gap: 0.15rem; }
+.events-list li strong { font-family: var(--font-display); font-size: 1.15rem; color: var(--white); margin: 0 0.3rem; }
+.events-list li small { color: var(--grey-dark); font-size: 0.75rem; }
+.stats-source { margin-top: 1.5rem; font-size: 0.78rem; color: var(--grey-dark); }
+@media (max-width: 860px) { .stats-grid { grid-template-columns: 1fr; gap: 2rem; } .stat-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) {
+  .scorer { grid-template-columns: 90px 1fr; min-height: 100px; }
+  .scorer-top { grid-template-columns: 130px 1fr; min-height: 160px; }
+  .scorer-top .scorer-media img { max-height: 160px; }
+  .scorer-top .scorer-name { font-size: 1.6rem; }
+  .scorer-top .scorer-goals strong { font-size: 2.2rem; }
+  .stat-tile strong { font-size: 1.5rem; }
+}

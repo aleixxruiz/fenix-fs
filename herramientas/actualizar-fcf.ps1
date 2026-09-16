@@ -33,6 +33,7 @@ if (-not $chrome) { Write-Host "No se ha encontrado Chrome ni Edge." -Foreground
 
 # Leer los grupos de js/data.js (líneas con grupId: "12345")
 $js = Get-Content $dataJs -Raw
+$temp = ([regex]::Match($js, "temporadaId=(\d+)").Groups[1].Value); if (-not $temp) { $temp = "22" }
 $grupos = [regex]::Matches($js, 'grupId:\s*"(\d+)"') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique
 if (-not $grupos) { Write-Host "No hay grupos configurados en js/data.js (fcfGrupos)." -ForegroundColor Yellow; exit 0 }
 
@@ -53,11 +54,13 @@ $stamp = (Get-Date).ToString("yyyy-MM-dd HH:mm")
 foreach ($g in $grupos) {
   Write-Host "Grupo $g ..." -NoNewline
   $clas = Get-Json "https://www.fcf.cat/api/competition/classificacio?grupId=$g"
+  $gole = Get-Json "https://www.fcf.cat/api/competition/goleadores?grupId=$g&temporada=$temp"; if (-not $gole) { $gole = "[]" }
+  $sanc = Get-Json "https://www.fcf.cat/api/competition/sanciones?grupId=$g&temporada=$temp"; if (-not $sanc) { $sanc = "{}" }
   $part = Get-Json "https://www.fcf.cat/api/competition/partidos?grupId=$g"
   if (-not $clas -or -not $part) { Write-Host " ERROR (sin datos, se mantiene el archivo anterior)" -ForegroundColor Red; continue }
   $content = "/* Datos de la FCF - grupo $g - actualizado $stamp - generado por herramientas/actualizar-fcf.ps1 */`n" +
              "window.FCF = window.FCF || {};`n" +
-             "window.FCF[""$g""] = { actualizado: ""$stamp"", clasificacion: $clas, partidos: $part };`n"
+             "window.FCF[""$g""] = { actualizado: ""$stamp"", clasificacion: $clas, partidos: $part, goleadores: $gole, sanciones: $sanc };`n"
   [System.IO.File]::WriteAllText((Join-Path $outDir "$g.js"), $content, (New-Object System.Text.UTF8Encoding $false))
   Write-Host " OK" -ForegroundColor Green
 }
