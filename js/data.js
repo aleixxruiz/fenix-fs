@@ -110,16 +110,19 @@ const CLUB = {
         { role: "Entrenador", name: "Ciscu Venegas" }
       ],
       plantilla: [
-        { name: "Nombre Apellido", position: "Portero", number: "1",  photo: "assets/img/players/senior-a/1.jpg" },
-        { name: "Nombre Apellido", position: "Portero", number: "13", photo: "" },
-        { name: "Nombre Apellido", position: "Cierre",  number: "4",  photo: "" },
-        { name: "Nombre Apellido", position: "Cierre",  number: "5",  photo: "" },
-        { name: "Nombre Apellido", position: "Ala",     number: "7",  photo: "" },
-        { name: "Nombre Apellido", position: "Ala",     number: "8",  photo: "" },
-        { name: "Nombre Apellido", position: "Ala",     number: "10", photo: "" },
-        { name: "Nombre Apellido", position: "Ala",     number: "11", photo: "" },
-        { name: "Nombre Apellido", position: "Pívot",   number: "9",  photo: "" },
-        { name: "Nombre Apellido", position: "Pívot",   number: "14", photo: "" }
+        { name: "Raul Montenegro",   position: "Portero", number: "", photo: "assets/img/players/senior-a/raul-montenegro.jpg" },
+        { name: "Sergio Cebollero",  position: "Portero", number: "", photo: "assets/img/players/senior-a/sergio-cebollero.jpg" },
+        { name: "Serni Fenoy",       position: "Cierre",  number: "", photo: "assets/img/players/senior-a/serni-fenoy.jpg" },
+        { name: "Cristian Riquelme", position: "Cierre",  number: "", photo: "assets/img/members/cristian-riquelme.jpg" },
+        { name: "Juan Gutiérrez",    position: "Ala",     number: "", photo: "assets/img/players/senior-a/juan-gutierrez.jpg" },
+        { name: "Angel Olivares",    position: "Ala",     number: "", photo: "assets/img/players/senior-a/angel-olivares.jpg" },
+        { name: "Uri Moreno",        position: "Ala",     number: "", photo: "assets/img/players/senior-a/uri-moreno.jpg" },
+        { name: "Joan Marc Uribe",   position: "Ala",     number: "", photo: "assets/img/players/senior-a/joan-marc-uribe.jpg" },
+        { name: "Josep Masip",       position: "Ala",     number: "", photo: "assets/img/players/senior-a/josep-masip.jpg" },
+        { name: "Kendry",            position: "Ala",     number: "", photo: "assets/img/players/senior-a/kendry.jpg" },
+        { name: "Madrigal",          position: "Ala",     number: "", photo: "assets/img/players/senior-a/madrigal.jpg" },
+        { name: "Azzy",              position: "Pívot",   number: "", photo: "assets/img/players/senior-a/azzy.jpg" },
+        { name: "Aitor",             position: "Pívot",   number: "", photo: "assets/img/players/senior-a/aitor.jpg" }
       ],
       pending: false
     },
