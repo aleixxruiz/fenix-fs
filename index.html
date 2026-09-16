@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=19">
+  <link rel="stylesheet" href="css/style.css?v=20">
 </head>
 <body>
 
@@ -227,7 +227,10 @@
         </p>
       </div>
 
-      <form class="contact-form" id="contact-form" action="https://formspree.io/f/TU_ID_FORMSPREE" method="POST" novalidate>
+      <form class="contact-form" id="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+        <input type="hidden" name="access_key" value="3599e7ba-739a-46d7-b7f5-035b320bd7bf">
+        <input type="hidden" name="subject" value="Nuevo mensaje desde la web del Fénix FS">
+        <input type="hidden" name="from_name" value="Web Fénix FS">
         <div class="form-row">
           <label for="nombre">Nombre *</label>
           <input type="text" id="nombre" name="nombre" required autocomplete="name">
@@ -259,7 +262,7 @@
           <input type="checkbox" id="privacidad" name="privacidad" required>
           <label for="privacidad">Acepto que el club use mis datos para responder a esta solicitud.</label>
         </div>
-        <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off">
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" style="display:none">
         <button type="submit" class="btn btn-primary btn-block btn-send">Siente el Fénix</button>
         <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
       </form>
