@@ -1,0 +1,40 @@
+name: Actualizar datos FCF
+
+on:
+  schedule:
+    # Lunes 06:00 y domingos 23:00 hora de Madrid (UTC+1/+2). Cron va en UTC.
+    - cron: "0 4 * * 1"
+    - cron: "0 21 * * 0"
+  workflow_dispatch: {}   # permite lanzarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Descargar clasificación y partidos de la FCF
+        run: node herramientas/actualizar-fcf.mjs
+        env:
+          CHROME_PATH: google-chrome
+
+      - name: Guardar cambios en el repositorio
+        run: |
+          git config user.name "Fénix FS bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/fcf
+          if git diff --cached --quiet; then
+            echo "Sin cambios en los datos de la FCF."
+          else
+            git commit -m "Datos FCF actualizados automáticamente"
+            git push
+          fi
