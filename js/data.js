@@ -9,6 +9,16 @@
 
 const CLUB = {
 
+  /* Botón flotante de WhatsApp (abajo a la derecha).
+     - numero: con prefijo de país y sin espacios ni signos (España: 34 + 9 cifras).
+     - mensaje: texto que aparece ya escrito al abrir el chat.
+     Deja numero: "" para ocultar el botón. */
+  whatsapp: {
+    numero: "34615019735",
+    mensaje: "Hola Fénix FS, os escribo desde la web: ",
+    etiqueta: "¿Hablamos?"
+  },
+
   /* Cifras que aparecen bajo el hero. Cambia el valor y la etiqueta. */
   stats: [
     { value: "2018", label: "Año de fundación" },

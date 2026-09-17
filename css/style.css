@@ -1210,3 +1210,35 @@ body::after { background: rgba(11,11,12,0.35); }
 
 /* v31 · El desplazamiento a secciones lo hace GSAP (más rápido); se quita el suave del navegador */
 html { scroll-behavior: auto; }
+
+/* =====================================================================
+   v32 · Botón flotante de WhatsApp (abajo a la derecha)
+   ===================================================================== */
+.wa-float {
+  position: fixed; right: 1.2rem; bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px)); z-index: 90;
+  display: flex; align-items: center; gap: 0.6rem; text-decoration: none;
+}
+.wa-icon {
+  width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--red); color: #fff; box-shadow: 0 10px 30px rgba(226,0,26,0.45), 0 4px 12px rgba(0,0,0,0.5);
+  transition: transform 0.2s ease, background 0.2s ease;
+  animation: wa-pulse 2.6s ease-out infinite;
+}
+.wa-icon svg { width: 30px; height: 30px; }
+.wa-float:hover .wa-icon { transform: scale(1.08); background: var(--red-dark); animation: none; }
+@keyframes wa-pulse {
+  0% { box-shadow: 0 10px 30px rgba(226,0,26,0.45), 0 0 0 0 rgba(226,0,26,0.55); }
+  70% { box-shadow: 0 10px 30px rgba(226,0,26,0.45), 0 0 0 16px rgba(226,0,26,0); }
+  100% { box-shadow: 0 10px 30px rgba(226,0,26,0.45), 0 0 0 0 rgba(226,0,26,0); }
+}
+.wa-bubble {
+  background: var(--white); color: var(--black); font-weight: 700; font-size: 0.9rem;
+  padding: 0.55rem 0.9rem; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.45); white-space: nowrap;
+  opacity: 0; transform: translateX(10px); pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease;
+  position: relative;
+}
+.wa-bubble::after { content: ""; position: absolute; right: -6px; top: 50%; margin-top: -6px; border: 6px solid transparent; border-left-color: var(--white); border-right: 0; }
+.wa-float.wa-show .wa-bubble, .wa-float:hover .wa-bubble { opacity: 1; transform: none; }
+body.modal-open .wa-float, body.nav-open .wa-float { display: none; }
+@media (prefers-reduced-motion: reduce) { .wa-icon { animation: none; } }
+@media (max-width: 720px) { .wa-icon { width: 52px; height: 52px; } .wa-icon svg { width: 27px; height: 27px; } .wa-float { right: 0.9rem; } }
