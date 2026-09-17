@@ -1133,3 +1133,43 @@ body::after { background: rgba(11,11,12,0.35); }
 /* v26 · Animaciones GSAP: las cajas de imagen recortan el exceso del parallax */
 .team-media, .kit-media, .timeline-media, .news-media, .product-media, .scorer-media { overflow: hidden; }
 .team-media img, .news-media img, .product-media img, .kit-media img, .timeline-media img { will-change: transform; }
+
+/* =====================================================================
+   v27 · Ficha de jugador (desde el pop-up de plantilla)
+   ===================================================================== */
+.player { cursor: pointer; border-radius: 12px; padding: 0.5rem 0.2rem; transition: background 0.2s, transform 0.2s; }
+.player:hover, .player:focus-visible { background: rgba(255,255,255,0.04); transform: translateY(-2px); outline: none; }
+.player-dorsal { display: block; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-top: 0.15rem; }
+.modal-player { width: min(100%, 820px); }
+.pcard { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; align-items: start; }
+.pcard-media {
+  position: relative; aspect-ratio: 4 / 5; border-radius: var(--radius); overflow: hidden;
+  background: linear-gradient(160deg, rgba(226,0,26,0.35), var(--black-3) 70%); border: 1px solid rgba(226,0,26,0.35);
+  display: grid; place-items: center;
+}
+.pcard-media::before { content: attr(data-initials); font-family: var(--font-title); font-size: 5rem; color: rgba(255,255,255,0.15); }
+.pcard-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.pcard-number {
+  position: absolute; right: 0.8rem; bottom: 0.6rem; font-family: var(--font-title); font-size: 5rem; line-height: 1;
+  color: #fff; text-shadow: 0 4px 24px rgba(0,0,0,0.8); opacity: 0.95;
+}
+.pcard-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; margin-bottom: 1.4rem; }
+.pcard-stat { background: var(--black-3); border: 1px solid var(--line); border-radius: 12px; padding: 0.9rem 0.6rem; text-align: center; }
+.pcard-stat strong { display: block; font-family: var(--font-title); font-size: 2.2rem; line-height: 1; color: var(--white); }
+.pcard-stat span { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey); display: inline-flex; align-items: center; gap: 0.35rem; }
+.pcard-stat i { display: inline-block; width: 9px; height: 12px; border-radius: 2px; }
+.pcard-stat .card-y { background: #f2c94c; } .pcard-stat .card-r { background: var(--red); }
+.pcard-facts { margin: 0 0 1.2rem; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem 1.2rem; }
+.pcard-facts div { border-bottom: 1px solid var(--line); padding-bottom: 0.4rem; }
+.pcard-facts dt { font-size: 0.66rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+.pcard-facts dd { margin: 0; color: var(--white); font-weight: 600; }
+.pcard-bio { color: var(--grey); line-height: 1.7; }
+.pcard-back { margin: 1.4rem 0 0; font-size: 0.85rem; }
+.pcard-back a { color: var(--grey); }
+.pcard-back a:hover { color: var(--white); }
+@media (max-width: 720px) {
+  .pcard { grid-template-columns: 1fr; gap: 1.2rem; }
+  .pcard-media { max-width: 260px; margin: 0 auto; }
+  .pcard-number { font-size: 3.6rem; }
+  .pcard-stat strong { font-size: 1.7rem; }
+}

@@ -134,19 +134,55 @@
       if (s.startsWith("piv")) return "Pívot";
       return "Otros";
     };
-    const playerCard = (p) => `
-      <li class="player">
+    const playerCard = (p, teamIdx, playerIdx) => `
+      <li class="player" data-player="${teamIdx}:${playerIdx}" tabindex="0" role="button" aria-label="Ficha de ${esc(p.name)}">
         <div class="player-photo" data-initials="${esc(initials(p.name))}">
           ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">` : ""}
           ${p.number ? `<span class="player-number">${esc(p.number)}</span>` : ""}
         </div>
         <span class="player-name">${esc(p.name)}</span>
+        ${p.number ? `<span class="player-dorsal">Dorsal ${esc(p.number)}</span>` : ""}
       </li>`;
+
+    /* Ficha individual del jugador */
+    const normKey = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/\s+/g, " ").trim();
+    const openPlayer = (teamIdx, playerIdx) => {
+      const t = CLUB.equipos[teamIdx]; const p = t && (t.plantilla || [])[playerIdx];
+      if (!p) return;
+      const st = ((window.PLAYER_STATS || {})[t.name] || {})[normKey(p.name)] || { goles: 0, amarillas: 0, rojas: 0 };
+      const pos = normPos(p.position);
+      const facts = [
+        p.edad ? ["Edad", p.edad] : null,
+        p.altura ? ["Altura", p.altura] : null,
+        p.pie ? ["Pie", p.pie] : null,
+        p.desde ? ["En el club desde", p.desde] : null,
+        p.procedencia ? ["Procedencia", p.procedencia] : null
+      ].filter(Boolean);
+      const body = `
+        <div class="pcard">
+          <div class="pcard-media" data-initials="${esc(initials(p.name))}">
+            ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" onerror="this.remove()">` : ""}
+            ${p.number ? `<span class="pcard-number">${esc(p.number)}</span>` : ""}
+          </div>
+          <div class="pcard-info">
+            <div class="pcard-stats">
+              <div class="pcard-stat"><strong>${st.goles || 0}</strong><span>Goles</span></div>
+              <div class="pcard-stat"><strong>${st.amarillas || 0}</strong><span><i class="card-y"></i>Amarillas</span></div>
+              <div class="pcard-stat"><strong>${st.rojas || 0}</strong><span><i class="card-r"></i>Rojas</span></div>
+            </div>
+            ${facts.length ? `<dl class="pcard-facts">${facts.map(f => `<div><dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd></div>`).join("")}</dl>` : ""}
+            ${p.bio ? `<p class="pcard-bio">${esc(p.bio)}</p>` : ""}
+            ${p.instagram ? `<a class="btn btn-outline btn-small" href="https://www.instagram.com/${esc(String(p.instagram).replace(/^@/, ""))}/" target="_blank" rel="noopener">@${esc(String(p.instagram).replace(/^@/, ""))}</a>` : ""}
+            <p class="pcard-back"><a href="#" data-back-team="${teamIdx}">&#8249; Volver a la plantilla del ${esc(t.name)}</a></p>
+          </div>
+        </div>`;
+      openModal({ kicker: `${esc(t.name)} · ${pos}`, title: p.name, tagline: p.number ? `Dorsal ${p.number}` : "", body, mode: "player" });
+    };
     const openTeam = (idx) => {
       const t = CLUB.equipos[idx];
       if (!t) return;
       const groups = {};
-      (t.plantilla || []).forEach(p => { const k = normPos(p.position); (groups[k] = groups[k] || []).push(p); });
+      (t.plantilla || []).forEach((p, pi) => { const k = normPos(p.position); (groups[k] = groups[k] || []).push({ p, pi }); });
       const order = POSITIONS.concat(Object.keys(groups).filter(k => !POSITIONS.includes(k)));
       let html = "";
       if (t.staff && t.staff.length) {
@@ -157,7 +193,7 @@
         html += sections.map(k => `
           <section class="position-group">
             <h3 class="position-title">${esc(k)}${k === "Otros" ? "" : "s"}<span>${groups[k].length}</span></h3>
-            <ul class="players">${groups[k].map(playerCard).join("")}</ul>
+            <ul class="players">${groups[k].map(x => playerCard(x.p, idx, x.pi)).join("")}</ul>
           </section>`).join("");
       } else {
         html += `<p class="modal-empty">${t.pending ? "Plantilla en construcción. ¿Quieres formar parte del equipo?" : "Plantilla pendiente de publicar."} <a href="#contacto" data-close>Escríbenos</a>.</p>`;
@@ -173,6 +209,18 @@
       if (ev.key !== "Enter" && ev.key !== " ") return;
       const card = ev.target.closest("[data-team]");
       if (card && ev.target === card) { ev.preventDefault(); openTeam(+card.dataset.team); }
+    });
+    /* Dentro del pop-up: abrir ficha de jugador y volver a la plantilla */
+    modal.addEventListener("click", (ev) => {
+      const back = ev.target.closest("[data-back-team]");
+      if (back) { ev.preventDefault(); openTeam(+back.dataset.backTeam); return; }
+      const pl = ev.target.closest("[data-player]");
+      if (pl) { const [ti, pi] = pl.dataset.player.split(":").map(Number); openPlayer(ti, pi); }
+    });
+    modal.addEventListener("keydown", (ev) => {
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      const pl = ev.target.closest("[data-player]");
+      if (pl && ev.target === pl) { ev.preventDefault(); const [ti, pi] = pl.dataset.player.split(":").map(Number); openPlayer(ti, pi); }
     });
   }
 
@@ -502,6 +550,10 @@
       }
       const list = Object.values(players);
       teamsWithData.push({ team: t, players: list, bal, fromFcf, events, hasData: !!(list.length || bal) });
+      /* Totales por jugador, para la ficha del pop-up de plantilla */
+      window.PLAYER_STATS = window.PLAYER_STATS || {};
+      window.PLAYER_STATS[t.name] = {};
+      list.forEach(p => { window.PLAYER_STATS[t.name][normName(p.name)] = p; });
     });
 
     /* Pestaña "Club": suma de todos los equipos */

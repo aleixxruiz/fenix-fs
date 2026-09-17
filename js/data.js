@@ -93,7 +93,11 @@ const CLUB = {
          · position: "Portero", "Cierre", "Ala" o "Pívot"
          · number: dorsal (opcional, "" si no tiene)
          · photo: ruta de la foto en assets/img/players/ (opcional; si está vacía
-           o no existe, se muestran las iniciales). Recomendado: foto cuadrada.
+           o no existe, se muestran las iniciales). Recomendado: foto vertical 4:5.
+         · Ficha (todo opcional, se muestra al pulsar el jugador): edad, altura,
+           pie ("Derecho"/"Izquierdo"), desde (año de llegada), procedencia,
+           bio (frase corta), instagram (usuario sin @).
+           Los goles y tarjetas de la ficha salen solos de las estadísticas.
      - staff: lista de personas del cuerpo técnico (cargo y nombre).
      - pending: true si el equipo aún no está confirmado (sale con etiqueta "En preparación"). */
   equipos: [
