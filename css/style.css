@@ -1177,3 +1177,30 @@ body::after { background: rgba(11,11,12,0.35); }
 /* v28 · Plantilla del pop-up: cuatro jugadores por fila */
 .players { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 @media (max-width: 720px) { .players { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* =====================================================================
+   v29 · Cuerpo técnico: tarjetas con foto en el pop-up y ficha propia
+   ===================================================================== */
+.modal-staff-cards { display: flex; flex-wrap: wrap; gap: 0.8rem; padding: 0.4rem 0 1.2rem; border-bottom: 1px solid var(--line); margin-bottom: 1.4rem; }
+.staffcard {
+  display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem 1rem 0.5rem 0.5rem; border-radius: 999px;
+  background: var(--black-3); border: 1px solid rgba(214,166,58,0.35); cursor: pointer; transition: transform 0.2s, border-color 0.2s, background 0.2s;
+}
+.staffcard:hover, .staffcard:focus-visible { transform: translateY(-2px); border-color: var(--gold); background: rgba(214,166,58,0.08); outline: none; }
+.staffcard-photo {
+  position: relative; width: 52px; height: 52px; border-radius: 50%; overflow: hidden; flex: none;
+  background: var(--black-2); border: 2px solid var(--gold); display: grid; place-items: center;
+}
+.staffcard-photo::before { content: attr(data-initials); font-family: var(--font-display); font-size: 1.1rem; color: var(--grey); }
+.staffcard-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.staffcard-info { display: grid; line-height: 1.2; }
+.staffcard-info em { font-style: normal; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+.staffcard-info strong { font-size: 0.95rem; color: var(--white); }
+.pcard-staff .pcard-media { background: linear-gradient(160deg, rgba(214,166,58,0.3), var(--black-3) 70%); border-color: rgba(214,166,58,0.4); }
+.pcard-role-note { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.6rem; }
+.pcard-stats-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pcard-stat.stat-win { border-top: 3px solid #4ccf6f; }
+.pcard-stat.stat-draw { border-top: 3px solid var(--gold); }
+.pcard-stat.stat-loss { border-top: 3px solid var(--red); }
+.pcard-quote { margin: 0 0 1rem; padding: 0.8rem 1rem; border-left: 3px solid var(--gold); background: rgba(214,166,58,0.06); color: var(--white); font-style: italic; }
+@media (max-width: 720px) { .pcard-stats-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .staffcard { width: 100%; } }

@@ -186,7 +186,11 @@
       const order = POSITIONS.concat(Object.keys(groups).filter(k => !POSITIONS.includes(k)));
       let html = "";
       if (t.staff && t.staff.length) {
-        html += `<div class="modal-staff">${t.staff.map(s => `<span><em>${esc(s.role)}</em>${esc(s.name)}</span>`).join("")}</div>`;
+        html += `<div class="modal-staff-cards">${t.staff.map((s, si) => `
+          <div class="staffcard" data-staff="${idx}:${si}" tabindex="0" role="button" aria-label="Ficha de ${esc(s.name)}">
+            <div class="staffcard-photo" data-initials="${esc(initials(s.name))}">${s.photo ? `<img src="${esc(s.photo)}" alt="${esc(s.name)}" loading="lazy" onerror="this.remove()">` : ""}</div>
+            <div class="staffcard-info"><em>${esc(s.role)}</em><strong>${esc(s.name)}</strong></div>
+          </div>`).join("")}</div>`;
       }
       const sections = order.filter(k => groups[k] && groups[k].length);
       if (sections.length) {
@@ -211,14 +215,51 @@
       if (card && ev.target === card) { ev.preventDefault(); openTeam(+card.dataset.team); }
     });
     /* Dentro del pop-up: abrir ficha de jugador y volver a la plantilla */
+    /* Ficha del cuerpo técnico: enfocada al equipo (balance de temporada) y a la trayectoria */
+    const openStaff = (teamIdx, staffIdx) => {
+      const t = CLUB.equipos[teamIdx]; const s = t && (t.staff || [])[staffIdx];
+      if (!s) return;
+      const bal = (window.TEAM_BAL || {})[t.name];
+      const facts = [
+        s.desde ? ["En el club desde", s.desde] : null,
+        s.titulacion ? ["Titulación", s.titulacion] : null,
+        s.anteriores ? ["Clubes anteriores", s.anteriores] : null,
+        s.jugador ? ["Como jugador", s.jugador] : null
+      ].filter(Boolean);
+      const body = `
+        <div class="pcard pcard-staff">
+          <div class="pcard-media" data-initials="${esc(initials(s.name))}">
+            ${s.photo ? `<img src="${esc(s.photo)}" alt="${esc(s.name)}" onerror="this.remove()">` : ""}
+          </div>
+          <div class="pcard-info">
+            <p class="pcard-role-note">Balance del ${esc(t.name)} esta temporada</p>
+            <div class="pcard-stats pcard-stats-4">
+              <div class="pcard-stat"><strong>${bal ? bal.pj : "–"}</strong><span>Partidos</span></div>
+              <div class="pcard-stat stat-win"><strong>${bal ? bal.g : "–"}</strong><span>Victorias</span></div>
+              <div class="pcard-stat stat-draw"><strong>${bal ? bal.e : "–"}</strong><span>Empates</span></div>
+              <div class="pcard-stat stat-loss"><strong>${bal ? bal.p : "–"}</strong><span>Derrotas</span></div>
+            </div>
+            ${facts.length ? `<dl class="pcard-facts">${facts.map(f => `<div><dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd></div>`).join("")}</dl>` : ""}
+            ${s.filosofia ? `<blockquote class="pcard-quote">“${esc(s.filosofia)}”</blockquote>` : ""}
+            ${s.bio ? `<p class="pcard-bio">${esc(s.bio)}</p>` : ""}
+            ${s.instagram ? `<a class="btn btn-outline btn-small" href="https://www.instagram.com/${esc(String(s.instagram).replace(/^@/, ""))}/" target="_blank" rel="noopener">@${esc(String(s.instagram).replace(/^@/, ""))}</a>` : ""}
+            <p class="pcard-back"><a href="#" data-back-team="${teamIdx}">&#8249; Volver a la plantilla del ${esc(t.name)}</a></p>
+          </div>
+        </div>`;
+      openModal({ kicker: `${esc(t.name)} · Cuerpo técnico`, title: s.name, tagline: s.role || "", body, mode: "player" });
+    };
     modal.addEventListener("click", (ev) => {
       const back = ev.target.closest("[data-back-team]");
       if (back) { ev.preventDefault(); openTeam(+back.dataset.backTeam); return; }
+      const st = ev.target.closest("[data-staff]");
+      if (st) { const [ti, si] = st.dataset.staff.split(":").map(Number); openStaff(ti, si); return; }
       const pl = ev.target.closest("[data-player]");
       if (pl) { const [ti, pi] = pl.dataset.player.split(":").map(Number); openPlayer(ti, pi); }
     });
     modal.addEventListener("keydown", (ev) => {
       if (ev.key !== "Enter" && ev.key !== " ") return;
+      const st = ev.target.closest("[data-staff]");
+      if (st && ev.target === st) { ev.preventDefault(); const [ti, si] = st.dataset.staff.split(":").map(Number); openStaff(ti, si); return; }
       const pl = ev.target.closest("[data-player]");
       if (pl && ev.target === pl) { ev.preventDefault(); const [ti, pi] = pl.dataset.player.split(":").map(Number); openPlayer(ti, pi); }
     });
@@ -553,6 +594,8 @@
       /* Totales por jugador, para la ficha del pop-up de plantilla */
       window.PLAYER_STATS = window.PLAYER_STATS || {};
       window.PLAYER_STATS[t.name] = {};
+      window.TEAM_BAL = window.TEAM_BAL || {};
+      if (bal) window.TEAM_BAL[t.name] = bal;
       list.forEach(p => { window.PLAYER_STATS[t.name][normName(p.name)] = p; });
     });
 

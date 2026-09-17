@@ -98,7 +98,9 @@ const CLUB = {
            pie ("Derecho"/"Izquierdo"), desde (año de llegada), procedencia,
            bio (frase corta), instagram (usuario sin @).
            Los goles y tarjetas de la ficha salen solos de las estadísticas.
-     - staff: lista de personas del cuerpo técnico (cargo y nombre).
+     - staff: cuerpo técnico. Cada persona: role (cargo), name, photo (assets/img/staff/)
+       y, opcionales para su ficha: desde (año), titulacion, anteriores (clubes),
+       jugador (trayectoria como jugador), filosofia (frase), bio, instagram.
      - pending: true si el equipo aún no está confirmado (sale con etiqueta "En preparación"). */
   equipos: [
     {
@@ -111,7 +113,7 @@ const CLUB = {
         "assets/img/teams/senior-a-1.jpg"
       ],
       staff: [
-        { role: "Entrenador", name: "Ciscu Venegas" }
+        { role: "Entrenador", name: "Ciscu Venegas", photo: "assets/img/members/ciscu-venegas.jpg" }
       ],
       plantilla: [
         { name: "Raul Montenegro",   position: "Portero", number: "", photo: "assets/img/players/senior-a/raul-montenegro.jpg" },
@@ -140,8 +142,8 @@ const CLUB = {
         "assets/img/teams/senior-b-2.jpg"
       ],
       staff: [
-        { role: "Entrenador", name: "Vlad Pienariu" },
-        { role: "Segundo entrenador", name: "Joel García" }
+        { role: "Entrenador", name: "Vlad Pienariu", photo: "assets/img/staff/vlad-pienariu.jpg" },
+        { role: "Segundo entrenador", name: "Joel García", photo: "assets/img/staff/joel-garcia.jpg" }
       ],
       plantilla: [
         { name: "Eric Márquez",        position: "Portero", number: "1", photo: "assets/img/players/senior-b/eric-marquez.jpg" },
@@ -169,7 +171,7 @@ const CLUB = {
       description: "Equipo de nueva creación, dispuesto a darlo todo en la pista desde el primer día. La familia Fénix sigue creciendo.",
       image: "assets/img/teams/senior-c.jpg",
       staff: [
-        { role: "Entrenador", name: "Roger Camins" }
+        { role: "Entrenador", name: "Roger Camins", photo: "assets/img/staff/roger-camins.jpg" }
       ],
       plantilla: [
         { name: "Nombre Apellido", position: "Portero", number: "1",  photo: "" },
