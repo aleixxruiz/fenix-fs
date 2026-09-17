@@ -232,9 +232,12 @@ const CLUB = {
   fcfGrupos: [
     { equipo: "Senior A", competicion: "1ª Catalana · BCN Gr. 2", grupId: "58162566",
       url: "https://www.fcf.cat/ca/competicio?temporadaId=22&disciplinaId=19308236&competicioId=58162562&grupId=58162566" },
-    { equipo: "Senior B", competicion: "3ª Catalana", grupId: "", url: "" },
-    { equipo: "Senior C", competicion: "3ª Catalana", grupId: "", url: "" },
-    { equipo: "Senior D", competicion: "3ª Catalana", grupId: "", url: "" }
+    { equipo: "Senior B", competicion: "3ª Catalana · BCN Gr. 5", grupId: "58162590",
+      url: "https://www.fcf.cat/ca/competicio?temporadaId=22&disciplinaId=19308236&competicioId=58162583&grupId=58162590" },
+    { equipo: "Senior C", competicion: "3ª Catalana · BCN Gr. 4", grupId: "58162589",
+      url: "https://www.fcf.cat/ca/competicio?temporadaId=22&disciplinaId=19308236&competicioId=58162583&grupId=58162589" },
+    { equipo: "Senior D", competicion: "3ª Catalana · BCN Gr. 6", grupId: "58162591",
+      url: "https://www.fcf.cat/ca/competicio?temporadaId=22&disciplinaId=19308236&competicioId=58162583&grupId=58162591" }
   ],
   /* Cómo reconocer al Fénix en los datos de la FCF (se busca este texto en el nombre del equipo). */
   fcfNombreClub: "FENIX",

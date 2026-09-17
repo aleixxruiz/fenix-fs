@@ -359,7 +359,7 @@
 
     const renderTable = (clas) => {
       const rows = (clas && clas.data) || [];
-      if (!rows.length) return `<p class="matches-empty">Clasificación pendiente de publicar.</p>`;
+      if (!rows.length) return `<p class="matches-empty">La FCF todavía no ha publicado la clasificación de este grupo. Aparecerá aquí en cuanto esté disponible.</p>`;
       const started = rows.some(r => num(r.played) > 0);
       const sorted = started ? rows.slice().sort((a, b) => num(a.position) - num(b.position)) : rows;
       return `
