@@ -1204,3 +1204,6 @@ body::after { background: rgba(11,11,12,0.35); }
 .pcard-stat.stat-loss { border-top: 3px solid var(--red); }
 .pcard-quote { margin: 0 0 1rem; padding: 0.8rem 1rem; border-left: 3px solid var(--gold); background: rgba(214,166,58,0.06); color: var(--white); font-style: italic; }
 @media (max-width: 720px) { .pcard-stats-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .staffcard { width: 100%; } }
+
+/* v30 · Ancla real al principio de la página (la cabecera es fija) */
+#top { position: absolute; top: 0; left: 0; width: 1px; height: 1px; }
