@@ -1173,3 +1173,7 @@ body::after { background: rgba(11,11,12,0.35); }
   .pcard-number { font-size: 3.6rem; }
   .pcard-stat strong { font-size: 1.7rem; }
 }
+
+/* v28 · Plantilla del pop-up: cuatro jugadores por fila */
+.players { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 720px) { .players { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
