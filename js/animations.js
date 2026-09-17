@@ -51,7 +51,7 @@
 
   /* Al saltar por un enlace interno (menú, botones), mostrar al instante lo que ya está en pantalla */
   function showVisibleNow() {
-    ScrollTrigger.refresh();
+    /* Sin ScrollTrigger.refresh() aquí: restauraría la posición de scroll y cancelaría el salto al ancla */
     const vh = window.innerHeight;
     revealTweens.forEach(tw => {
       const el = tw.targets()[0];
