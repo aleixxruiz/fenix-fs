@@ -10,6 +10,7 @@ FFS/
 ├── css/style.css       Estilos
 ├── js/data.js          ← CONTENIDO EDITABLE (historia, equipos, miembros, patrocinadores)
 ├── js/main.js          Lógica (pinta los datos, menú, formulario)
+├── js/animations.js    Animaciones de scroll con GSAP + ScrollTrigger (parallax de imágenes, fundidos). Se desactivan si el visitante tiene "reducir movimiento".
 ├── assets/img/
 │   ├── bg-dark.jpg            Fondo oscuro (hero y tarjetas de equipos)
 │   ├── bg-light.jpg           Fondo claro (sección de contacto)
