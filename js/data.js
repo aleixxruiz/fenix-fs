@@ -14,7 +14,7 @@ const CLUB = {
      - mensaje: texto que aparece ya escrito al abrir el chat.
      Deja numero: "" para ocultar el botón. */
   whatsapp: {
-    numero: "34615019735",
+    numero: "34640199520",
     mensaje: "Hola Fénix FS, os escribo desde la web: ",
     etiqueta: "¿Hablamos?"
   },
