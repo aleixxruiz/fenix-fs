@@ -9,10 +9,10 @@
    ===================================================================== */
 (function () {
   "use strict";
-  if (!window.gsap || !window.ScrollTrigger) return;
+  if (!window.gsap || !window.ScrollTrigger || !window.ScrollToPlugin) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
   /* Contenedores de imagen que reciben el efecto de expansión */
   const MEDIA = [
@@ -59,12 +59,19 @@
       if (r.top < vh * 1.1 && r.bottom > -vh * 0.2) tw.progress(1);
     });
   }
+  /* Desplazamiento rápido a las secciones (0,5 s) en lugar del suave del navegador */
   document.addEventListener("click", (ev) => {
     const a = ev.target.closest('a[href^="#"]');
-    if (!a) return;
-    setTimeout(showVisibleNow, 50);
-    setTimeout(showVisibleNow, 450);
-    setTimeout(showVisibleNow, 900);
+    if (!a || a.getAttribute("href").length < 2) return;
+    const id = a.getAttribute("href").slice(1);
+    const target = document.getElementById(id);
+    if (!target) return;
+    ev.preventDefault();
+    const header = document.querySelector(".site-header");
+    const offset = id === "top" ? 0 : (header ? header.offsetHeight + 8 : 0);
+    const y = Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset);
+    gsap.to(window, { scrollTo: y, duration: 0.5, ease: "power2.out", overwrite: true,
+      onUpdate: showVisibleNow, onComplete: () => { showVisibleNow(); if (history.replaceState) history.replaceState(null, "", "#" + id); } });
   });
   window.addEventListener("hashchange", () => { setTimeout(showVisibleNow, 50); setTimeout(showVisibleNow, 500); });
 
