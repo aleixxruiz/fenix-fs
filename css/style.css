@@ -1242,3 +1242,7 @@ html { scroll-behavior: auto; }
 body.modal-open .wa-float, body.nav-open .wa-float { display: none; }
 @media (prefers-reduced-motion: reduce) { .wa-icon { animation: none; } }
 @media (max-width: 720px) { .wa-icon { width: 52px; height: 52px; } .wa-icon svg { width: 27px; height: 27px; } .wa-float { right: 0.9rem; } }
+
+/* v33 · Partido jugado cuya acta aún no ha publicado la FCF */
+.match-pending { border-left-color: var(--grey-dark); opacity: 0.85; }
+.match-score .score-pending { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey); }

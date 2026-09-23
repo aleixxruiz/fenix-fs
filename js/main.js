@@ -432,11 +432,11 @@
         outcome = f > r ? "win" : f < r ? "loss" : "draw";
       }
       return `
-        <article class="match fcf-match ${played ? "match-played " + outcome : "match-next"}">
+        <article class="match fcf-match ${played ? "match-played " + outcome : (m.__pending ? "match-pending" : "match-next")}">
           <div class="match-meta"><span class="match-team">Jornada ${esc(m.JORNADA)}</span><span>${esc(dt.d)}</span></div>
           <div class="match-main">
             <span class="match-side ${home ? "is-fenix" : ""}">${crest(m.ESCUDO_CASA)}${esc(pretty(m.NOMBRE_CASA))}</span>
-            <span class="match-score">${played ? `${num(m.GOLES_CASA)}<i>-</i>${num(m.GOLES_FUERA)}` : `<small>${esc(dt.t || "--:--")}</small>`}</span>
+            <span class="match-score">${played ? `${num(m.GOLES_CASA)}<i>-</i>${num(m.GOLES_FUERA)}` : (m.__pending ? `<small class="score-pending">Pendiente</small>` : `<small>${esc(dt.t || "--:--")}</small>`)}</span>
             <span class="match-side ${away ? "is-fenix" : ""}">${esc(pretty(m.NOMBRE_FUERA))}${crest(m.ESCUDO_FUERA)}</span>
           </div>
           ${m.CAMPO ? `<div class="match-foot"><span>${esc(pretty(m.CAMPO))}</span></div>` : ""}
@@ -448,8 +448,11 @@
       Object.keys(partidos || {}).forEach(j => (partidos[j] || []).forEach(m => all.push(m)));
       const ours = all.filter(m => isClub(m.NOMBRE_CASA) || isClub(m.NOMBRE_FUERA));
       const played = ours.filter(m => m.GOLES_CASA !== null && m.GOLES_CASA !== "" && m.GOLES_FUERA !== null && m.GOLES_FUERA !== "");
-      const next = ours.filter(m => !played.includes(m)).sort((a, b) => String(a.COMIENZO1).localeCompare(String(b.COMIENZO1))).slice(0, 4);
-      const last = played.sort((a, b) => String(b.COMIENZO1).localeCompare(String(a.COMIENZO1))).slice(0, 4);
+      /* Partidos ya disputados cuya acta aún no ha publicado la FCF: van a "Últimos resultados" como pendientes */
+      const nowIso = new Date(Date.now() - 3 * 3600 * 1000).toISOString().slice(0, 19).replace("T", " ");
+      const pendingActa = ours.filter(m => !played.includes(m) && m.COMIENZO1 && !m.COMIENZO1.startsWith("0000") && m.COMIENZO1 < nowIso).map(m => Object.assign({}, m, { __pending: true }));
+      const next = ours.filter(m => !played.includes(m) && !pendingActa.some(p => p.CODACTA === m.CODACTA)).sort((a, b) => String(a.COMIENZO1).localeCompare(String(b.COMIENZO1))).slice(0, 4);
+      const last = played.concat(pendingActa).sort((a, b) => String(b.COMIENZO1).localeCompare(String(a.COMIENZO1))).slice(0, 4);
       return `
         <div class="matches-col">
           <h3 class="matches-subtitle">Próximos partidos</h3>
@@ -457,7 +460,7 @@
         </div>
         <div class="matches-col">
           <h3 class="matches-subtitle">Últimos resultados</h3>
-          <div class="matches">${last.length ? last.map(m => matchRow(m, true)).join("") : `<p class="matches-empty">Aún no hay resultados esta temporada.</p>`}</div>
+          <div class="matches">${last.length ? last.map(m => matchRow(m, !m.__pending)).join("") : `<p class="matches-empty">Aún no hay resultados esta temporada.</p>`}</div>
         </div>`;
     };
 
