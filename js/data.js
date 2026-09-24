@@ -137,7 +137,7 @@ const CLUB = {
         { name: "Josep Masip",       position: "Ala",     number: "5", photo: "assets/img/players/senior-a/josep-masip.jpg" },
         { name: "Kendry",            position: "Ala",     number: "", photo: "assets/img/players/senior-a/kendry.jpg" },
         { name: "Madrigal",          position: "Ala",     number: "", photo: "assets/img/players/senior-a/madrigal.jpg" },
-        { name: "Azzy",              position: "Pívot",   number: "", photo: "assets/img/players/senior-a/azzy.jpg" },
+        { name: "Jordi Medina \"Oso\"", position: "Pívot",  number: "", photo: "assets/img/players/senior-a/jordi-medina.jpg" },
         { name: "Aitor",             position: "Pívot",   number: "", photo: "assets/img/players/senior-a/aitor.jpg" }
       ],
       pending: false
