@@ -232,7 +232,8 @@ const CLUB = {
     { name: "Joel García · Masaje deportivo", logo: "assets/img/sponsors/joel-garcia.png",      url: "",                         tier: "patrocinador", bg: "" },
     /* Colaboradores (bloque aparte, más discreto) */
     { name: "Fenigraf Serigrafía",    logo: "assets/img/sponsors/fenigraf.png",                 url: "https://www.fenigraf.com/",                       tier: "colaborador",  bg: "" },
-    { name: "Ajuntament de Sabadell", logo: "assets/img/sponsors/ajuntament-sabadell.png",      url: "https://www.sabadell.cat/",                       tier: "colaborador",  bg: "" }
+    { name: "Ajuntament de Sabadell", logo: "assets/img/sponsors/ajuntament-sabadell.png",      url: "https://www.sabadell.cat/",                       tier: "colaborador",  bg: "" },
+    { name: "2Fast Imports",          logo: "assets/img/sponsors/2fastimports.png",             url: "",                                                tier: "colaborador",  bg: "" }
   ],
 
   /* =====================================================================
