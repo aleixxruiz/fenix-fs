@@ -1,10 +1,11 @@
-name: Actualizar datos FCF
+name: Actualizar datos (FCF e Instagram)
 
 on:
   schedule:
-    # Lunes 06:00 y domingos 23:00 hora de Madrid (UTC+1/+2). Cron va en UTC.
-    - cron: "0 4 * * 1"
+    # Cada día a las 08:00 hora de Madrid (Instagram) y, además, domingos 23:00 y lunes 06:00 (FCF). Cron va en UTC.
+    - cron: "0 6 * * *"
     - cron: "0 21 * * 0"
+    - cron: "0 4 * * 1"
   workflow_dispatch: {}   # permite lanzarlo a mano desde la pestaña Actions
 
 permissions:
@@ -27,14 +28,19 @@ jobs:
         env:
           CHROME_PATH: google-chrome
 
+      - name: Leer las últimas publicaciones de Instagram
+        run: node herramientas/actualizar-instagram.mjs
+        env:
+          CHROME_PATH: google-chrome
+
       - name: Guardar cambios en el repositorio
         run: |
           git config user.name "Fénix FS bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/fcf
+          git add data
           if git diff --cached --quiet; then
-            echo "Sin cambios en los datos de la FCF."
+            echo "Sin cambios."
           else
-            git commit -m "Datos FCF actualizados automáticamente"
+            git commit -m "Datos actualizados automáticamente (FCF / Instagram)"
             git push
           fi

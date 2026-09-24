@@ -364,18 +364,11 @@ const CLUB = {
      hay que revisarlas de vez en cuando). Deja "" para ocultar una. */
   instagramStats: { publicaciones: "1.342", seguidores: "1.223", siguiendo: "1.076" },
   instagramNombre: "Fénix FS",
-  /* Publicaciones que se muestran en la cuadrícula, ENTERAS (formato 4:5), la más
-     reciente primero. Para añadir una: en Instagram, abre el post → "..." → "Copiar
-     enlace" y pégalo aquí arriba del todo. Se muestran las 6 primeras de la lista.
-     Si la lista está vacía, se usa la cuadrícula automática de Instagram (recorta a cuadrado). */
-  instagramPosts: [
-    "https://www.instagram.com/p/DdR42JygbqS/",
-    "https://www.instagram.com/p/DdR3Eb5MNeE/",
-    "https://www.instagram.com/p/DdJsaySIPBP/",
-    "https://www.instagram.com/p/Dc_3xizIMDz/",
-    "https://www.instagram.com/p/Dc4D8lNotIZ/",
-    "https://www.instagram.com/p/Dc1dRfvAlPT/"
-  ],
+  /* Publicaciones de la cuadrícula (ENTERAS, formato 4:5).
+     Se actualizan SOLAS cada día: la automatización de GitHub lee el perfil y guarda
+     las últimas en data/instagram.js. Esta lista es solo para FIJAR posts a mano
+     (salen primero): abre el post en Instagram → "..." → "Copiar enlace" y pégalo aquí. */
+  instagramPosts: [],
   /* Cuántas publicaciones enseñar en la cuadrícula (3 por fila). */
   instagramMax: 6
 };

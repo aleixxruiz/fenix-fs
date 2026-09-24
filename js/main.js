@@ -810,7 +810,15 @@
   /* ---------- Instagram ---------- */
   const igEl = $("#instagram-feed");
   if (igEl) {
-    const posts = (CLUB.instagramPosts || []).filter(u => /^https:\/\/(www\.)?instagram\.com\/(p|reel)\/[\w-]+\/?/.test(u));
+    /* Posts fijados a mano (data.js) primero, y después los últimos del perfil (data/instagram.js, automático) */
+    const isPost = (u) => /^https:\/\/(www\.)?instagram\.com\/(p|reel)\/[\w-]+\/?/.test(u);
+    const seenPosts = new Set();
+    const posts = (CLUB.instagramPosts || []).concat(window.INSTAGRAM_POSTS || []).filter(u => {
+      if (!isPost(u)) return false;
+      const k = u.replace(/[?#].*$/, "").replace(/\/?$/, "/");
+      if (seenPosts.has(k)) return false;
+      seenPosts.add(k); return true;
+    });
     const profile = String(CLUB.instagramPerfil || "").replace(/^@/, "").trim();
     let html = "";
     if (profile && /^[\w.]+$/.test(profile)) {
