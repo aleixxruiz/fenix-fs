@@ -1246,3 +1246,7 @@ body.modal-open .wa-float, body.nav-open .wa-float { display: none; }
 /* v33 · Partido jugado cuya acta aún no ha publicado la FCF */
 .match-pending { border-left-color: var(--grey-dark); opacity: 0.85; }
 .match-score .score-pending { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey); }
+
+/* v34 · Ficha de jugador: dorsal arriba a la izquierda, en rojo, para no tapar la foto */
+.pcard-number { right: auto; bottom: auto; left: 0.7rem; top: 0.3rem; font-size: 4.2rem; color: var(--red); text-shadow: 0 3px 14px rgba(0,0,0,0.55); }
+@media (max-width: 720px) { .pcard-number { font-size: 3.2rem; } }
