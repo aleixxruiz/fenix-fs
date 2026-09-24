@@ -168,7 +168,6 @@ const CLUB = {
         { name: "Fran Alcaraz",        position: "Ala",     number: "15", photo: "assets/img/players/senior-b/fran-alcaraz.jpg" },
         { name: "Ivan Cortés",         position: "Ala",     number: "7", photo: "assets/img/players/senior-b/ivan-cortes.jpg" },
         { name: "Angel Pedraza",       position: "Ala",     number: "8", photo: "assets/img/players/senior-b/angel-pedraza.jpg" },
-        { name: "Jordi Medina \"Oso\"", position: "Pívot",  number: "79", photo: "assets/img/players/senior-b/jordi-medina.jpg" },
         { name: "Agustín Conejos",     position: "Pívot",   number: "44", photo: "assets/img/players/senior-b/agustin-conejos.jpg" },
         { name: "Sergi Alberich",      position: "Pívot",   number: "22", photo: "assets/img/players/senior-b/sergi-alberich.jpg" }
       ],
