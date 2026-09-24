@@ -135,7 +135,7 @@ const CLUB = {
         { name: "Uri Moreno",        position: "Ala",     number: "23", photo: "assets/img/players/senior-a/uri-moreno.jpg" },
         { name: "Joan Marc Uribe",   position: "Ala",     number: "7", photo: "assets/img/players/senior-a/joan-marc-uribe.jpg" },
         { name: "Josep Masip",       position: "Ala",     number: "5", photo: "assets/img/players/senior-a/josep-masip.jpg" },
-        { name: "Kendry",            position: "Ala",     number: "", photo: "assets/img/players/senior-a/kendry.jpg" },
+        { name: "Kendry Cruz",       position: "Ala",     number: "", photo: "assets/img/players/senior-a/kendry-cruz.jpg" },
         { name: "Madrigal",          position: "Ala",     number: "", photo: "assets/img/players/senior-a/madrigal.jpg" },
         { name: "Jordi Medina \"Oso\"", position: "Pívot",  number: "", photo: "assets/img/players/senior-a/jordi-medina.jpg" },
         { name: "Aitor Jiménez",     position: "Pívot",   number: "", photo: "assets/img/players/senior-a/aitor-jimenez.jpg" }
