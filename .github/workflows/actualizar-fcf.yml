@@ -2,10 +2,12 @@ name: Actualizar datos (FCF e Instagram)
 
 on:
   schedule:
-    # Cada día a las 08:00 hora de Madrid (Instagram) y, además, domingos 23:00 y lunes 06:00 (FCF). Cron va en UTC.
-    - cron: "0 6 * * *"
-    - cron: "0 21 * * 0"
-    - cron: "0 4 * * 1"
+    # Dos veces al día (~08:20 y ~19:20 hora de Madrid) y, además, domingos ~23:20 y lunes ~06:20 (FCF).
+    # Cron va en UTC. Minutos no redondos: GitHub retrasa o salta las tareas programadas a las horas en punto.
+    - cron: "20 6 * * *"
+    - cron: "20 17 * * *"
+    - cron: "20 21 * * 0"
+    - cron: "20 4 * * 1"
   workflow_dispatch: {}   # permite lanzarlo a mano desde la pestaña Actions
 
 permissions:

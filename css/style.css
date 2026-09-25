@@ -1254,3 +1254,6 @@ body.modal-open .wa-float, body.nav-open .wa-float { display: none; }
 /* v35 · Dorsales con halo rojo */
 .player-number { box-shadow: 0 0 0 2px rgba(226,0,26,0.35), 0 0 12px rgba(226,0,26,0.9); }
 .pcard-number { text-shadow: 0 0 6px rgba(226,0,26,0.95), 0 0 22px rgba(226,0,26,0.75), 0 3px 14px rgba(0,0,0,0.6); }
+
+/* v36 · Cuadrícula de Instagram: recuadros cuadrados (las publicaciones del club son 1:1) */
+.ig-post { aspect-ratio: 1 / 1; }
