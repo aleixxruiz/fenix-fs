@@ -135,10 +135,10 @@ const CLUB = {
         { name: "Uri Moreno",        position: "Ala",     number: "23", photo: "assets/img/players/senior-a/uri-moreno.jpg" },
         { name: "Joan Marc Uribe",   position: "Ala",     number: "7", photo: "assets/img/players/senior-a/joan-marc-uribe.jpg" },
         { name: "Josep Masip",       position: "Ala",     number: "5", photo: "assets/img/players/senior-a/josep-masip.jpg" },
-        { name: "Kendry Duno",       position: "Ala",     number: "", photo: "assets/img/players/senior-a/kendry-duno.jpg" },
-        { name: "David Madrigal",    position: "Ala",     number: "", photo: "assets/img/players/senior-a/david-madrigal.jpg" },
-        { name: "Jordi Medina \"Oso\"", position: "Pívot",  number: "", photo: "assets/img/players/senior-a/jordi-medina.jpg" },
-        { name: "Aitor Jiménez",     position: "Pívot",   number: "", photo: "assets/img/players/senior-a/aitor-jimenez.jpg" }
+        { name: "Kendry Duno",       position: "Ala",     number: "8", photo: "assets/img/players/senior-a/kendry-duno.jpg" },
+        { name: "David Madrigal",    position: "Ala",     number: "30", photo: "assets/img/players/senior-a/david-madrigal.jpg" },
+        { name: "Jordi Medina \"Oso\"", position: "Pívot",  number: "79", photo: "assets/img/players/senior-a/jordi-medina.jpg" },
+        { name: "Aitor Castillo",    position: "Pívot",   number: "66", photo: "assets/img/players/senior-a/aitor-castillo.jpg" }
       ],
       pending: false
     },
