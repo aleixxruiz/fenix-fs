@@ -134,10 +134,15 @@
       if (s.startsWith("piv")) return "Pívot";
       return "Otros";
     };
+    /* En la plantilla se carga la miniatura (carpeta thumbs/ junto a la foto); si no existe, la foto grande */
+    const thumbImg = (photo, name) => {
+      const t = String(photo).replace(/\/([^\/]+)$/, "/thumbs/$1");
+      return `<img src="${esc(t)}" data-full="${esc(photo)}" alt="${esc(name)}" loading="lazy" onerror="if(this.dataset.full){this.src=this.dataset.full;delete this.dataset.full}else{this.remove()}">`;
+    };
     const playerCard = (p, teamIdx, playerIdx) => `
       <li class="player" data-player="${teamIdx}:${playerIdx}" tabindex="0" role="button" aria-label="Ficha de ${esc(p.name)}">
         <div class="player-photo" data-initials="${esc(initials(p.name))}">
-          ${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy" onerror="this.remove()">` : ""}
+          ${p.photo ? thumbImg(p.photo, p.name) : ""}
           ${p.number ? `<span class="player-number">${esc(p.number)}</span>` : ""}
         </div>
         <span class="player-name">${esc(p.name)}</span>
@@ -188,7 +193,7 @@
       if (t.staff && t.staff.length) {
         html += `<div class="modal-staff-cards">${t.staff.map((s, si) => `
           <div class="staffcard" data-staff="${idx}:${si}" tabindex="0" role="button" aria-label="Ficha de ${esc(s.name)}">
-            <div class="staffcard-photo" data-initials="${esc(initials(s.name))}">${s.photo ? `<img src="${esc(s.photo)}" alt="${esc(s.name)}" loading="lazy" onerror="this.remove()">` : ""}</div>
+            <div class="staffcard-photo" data-initials="${esc(initials(s.name))}">${s.photo ? thumbImg(s.photo, s.name) : ""}</div>
             <div class="staffcard-info"><em>${esc(s.role)}</em><strong>${esc(s.name)}</strong></div>
           </div>`).join("")}</div>`;
       }
@@ -806,6 +811,289 @@
   }
   const shopNote = $("#shop-note");
   if (shopNote) shopNote.textContent = shopSoon ? ((CLUB.tiendaProximamente || {}).nota || "") : (CLUB.tiendaNota || "");
+
+  /* ---------- Socios ----------
+     Tarjetas de carnet (CLUB.socios.planes) + formulario de alta en el pop-up.
+     Al enviar, la solicitud llega por correo al club (Web3Forms). Si el carnet tiene
+     enlace de pago de Stripe ('stripe'), después se lleva al socio a pagar; si no,
+     se le muestran las instrucciones de pago de 'pago'. */
+  const SOC = CLUB.socios || {};
+  const plansEl = $("#plans");
+  const socPlans = SOC.planes || [];
+  if (plansEl && !socPlans.length) {
+    const sec = $("#socios");
+    if (sec) sec.hidden = true;
+    document.querySelectorAll('a[href="#socios"]').forEach(a => { a.style.display = "none"; });
+  }
+  if (plansEl && socPlans.length) {
+    const stripeUrl = (p) => (/^https:\/\//i.test(p.stripe || "") ? p.stripe : "");
+    const priceTxt = (p) => (p.precio ? p.precio + (p.periodo ? " / " + p.periodo : "") : "Precio por anunciar");
+    const socIntro = $("#socios-intro");
+    if (socIntro && SOC.intro) socIntro.textContent = SOC.intro;
+    const socNote = $("#socios-note");
+    if (socNote) socNote.textContent = SOC.nota || "";
+
+    /* Vista previa del carnet (botón del ojo): anverso con la modalidad y el nombre, y reverso al girar */
+    const CAR = SOC.carnet || {};
+    const hasCarnet = !!CAR.frente;
+    const eyeSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M1.5 12S5.5 4.8 12 4.8 22.5 12 22.5 12 18.5 19.2 12 19.2 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>`;
+    const carnetBlock = () => `
+      <div class="carnet-wrap">
+        <div class="carnet" data-carnet-flip title="Pulsa para girar el carnet">
+          <div class="carnet-inner">
+            <div class="carnet-face carnet-front">
+              <svg viewBox="0 0 1084 517" role="img" aria-label="Carnet de socio, anverso">
+                <image href="${esc(CAR.frente)}" width="1084" height="517"/>
+                <text class="carnet-name" x="264" y="286"></text>
+                <text class="carnet-tier" x="266" y="315"></text>
+                <text class="carnet-badge" x="356" y="374"></text>
+              </svg>
+            </div>
+            ${CAR.reverso ? `<div class="carnet-face carnet-back"><img src="${esc(CAR.reverso)}" alt="Carnet de socio, reverso" width="1084" height="438"></div>` : ""}
+          </div>
+        </div>
+        ${CAR.reverso ? `<div class="carnet-actions"><button type="button" class="btn btn-outline btn-small" data-carnet-flip>Ver reverso</button></div>` : ""}
+        ${CAR.nota ? `<p class="carnet-note">${esc(CAR.nota)}</p>` : ""}
+      </div>`;
+    /* Texto del carnet; si no cabe en su hueco se comprime a lo ancho */
+    const fitText = (el, txt, perChar, max) => {
+      if (!el) return;
+      el.textContent = txt;
+      if (txt.length * perChar > max) { el.setAttribute("textLength", max); el.setAttribute("lengthAdjust", "spacingAndGlyphs"); }
+      else { el.removeAttribute("textLength"); el.removeAttribute("lengthAdjust"); }
+    };
+    const paintCarnet = (root, p, name) => {
+      if (!root || !p) return;
+      const nm = String(name || "").trim().replace(/\s+/g, " ").toUpperCase().slice(0, 40) || "NOMBRE APELLIDO";
+      const tier = String(p.nombre || "").toUpperCase();
+      fitText(root.querySelector(".carnet-name"), nm, 15.5, 410);
+      fitText(root.querySelector(".carnet-tier"), tier, 17.5, 340);
+      fitText(root.querySelector(".carnet-badge"), tier, 13.4, 186);
+    };
+
+    plansEl.innerHTML = socPlans.map((p, i) => `
+      <article class="card plan ${/^(bronce|plata|oro)$/.test(p.nivel || "") ? "plan-tier plan-" + p.nivel : ""} reveal">
+        ${p.etiqueta ? `<span class="plan-badge">${esc(p.etiqueta)}</span>` : ""}
+        <div class="card-body">
+          <h3>${esc(p.nombre)}</h3>
+          <p class="plan-price">${p.precio
+            ? `${esc(p.precio)}${p.periodo ? `<small>/ ${esc(p.periodo)}</small>` : ""}`
+            : `<span class="plan-price-soon">Precio por anunciar</span>`}</p>
+          ${p.descripcion ? `<p class="plan-desc">${esc(p.descripcion)}</p>` : ""}
+          ${(p.ventajas || []).length ? `<ul class="plan-list">${p.ventajas.map(v => `<li>${esc(v)}</li>`).join("")}</ul>` : ""}
+          <button type="button" class="btn btn-primary btn-block" data-plan="${i}">Hazte socio</button>
+          ${hasCarnet ? `<button type="button" class="plan-eye" data-carnet-plan="${i}" aria-label="Ver el carnet de ${esc(p.nombre)}">${eyeSvg}<span>Ver carnet</span></button>` : ""}
+        </div>
+      </article>`).join("");
+
+    const ageOn = (iso) => {
+      const d = new Date(iso);
+      if (!iso || isNaN(d)) return null;
+      const now = new Date();
+      let a = now.getFullYear() - d.getFullYear();
+      if (now.getMonth() < d.getMonth() || (now.getMonth() === d.getMonth() && now.getDate() < d.getDate())) a--;
+      return a;
+    };
+
+    const openSocio = (idx) => {
+      const p = socPlans[idx];
+      if (!p) return;
+      const body = `
+        <form class="socio-form" id="socio-form" novalidate>
+          <p class="socio-summary" id="socio-summary"></p>
+          ${hasCarnet ? `
+          <button type="button" class="socio-eye" data-carnet-toggle aria-expanded="false" aria-controls="socio-preview">${eyeSvg}<span>Ver cómo quedará mi carnet</span></button>
+          <div class="socio-preview" id="socio-preview" hidden></div>` : ""}
+          <div class="socio-grid">
+            <div class="form-row socio-full">
+              <label for="socio-plan">Modalidad *</label>
+              <select id="socio-plan" name="modalidad" required>
+                ${socPlans.map((x, i) => `<option value="${i}" ${i === idx ? "selected" : ""}>${esc(x.nombre)} · ${esc(priceTxt(x))}</option>`).join("")}
+              </select>
+            </div>
+            <div class="form-row socio-full">
+              <label for="socio-nombre">Nombre y apellidos *</label>
+              <input type="text" id="socio-nombre" name="nombre" required autocomplete="name" maxlength="120">
+            </div>
+            ${SOC.pedirDni === false ? "" : `
+            <div class="form-row">
+              <label for="socio-dni">DNI / NIE *</label>
+              <input type="text" id="socio-dni" name="dni" required maxlength="15" autocomplete="off">
+            </div>`}
+            <div class="form-row">
+              <label for="socio-nacimiento">Fecha de nacimiento *</label>
+              <input type="date" id="socio-nacimiento" name="fecha_nacimiento" required max="${new Date().toISOString().slice(0, 10)}">
+            </div>
+            <div class="form-row">
+              <label for="socio-email">Email *</label>
+              <input type="email" id="socio-email" name="email" required autocomplete="email" maxlength="120">
+            </div>
+            <div class="form-row">
+              <label for="socio-telefono">Teléfono *</label>
+              <input type="tel" id="socio-telefono" name="telefono" required autocomplete="tel" maxlength="20">
+            </div>
+            <div class="form-row socio-full" id="socio-tutor-row" hidden>
+              <label for="socio-tutor">Padre, madre o tutor legal (nombre y DNI) *</label>
+              <input type="text" id="socio-tutor" name="tutor" maxlength="140">
+            </div>
+            <div class="form-row socio-full">
+              <label for="socio-comentarios">Comentarios</label>
+              <textarea id="socio-comentarios" name="comentarios" rows="2" maxlength="600" placeholder="Opcional"></textarea>
+            </div>
+          </div>
+          <div class="form-row form-check">
+            <input type="checkbox" id="socio-privacidad" name="privacidad" required>
+            <label for="socio-privacidad">${esc(SOC.consentimiento || "Acepto que el club use mis datos para gestionar mi alta como socio.")}</label>
+          </div>
+          ${SOC.privacidad ? `<p class="socio-legal">${esc(SOC.privacidad)}</p>` : ""}
+          <input type="checkbox" name="botcheck" class="hp" tabindex="-1" style="display:none">
+          <button type="submit" class="btn btn-primary btn-block btn-send" id="socio-submit"></button>
+          <p class="form-status" id="socio-status" role="status" aria-live="polite"></p>
+        </form>`;
+      openModal({ kicker: "Socios" + (SOC.temporada ? " · Temporada " + SOC.temporada : ""), title: "Alta de socio", tagline: "", body, mode: "socio" });
+      syncSocio();
+    };
+
+    const openCarnet = (idx) => {
+      const p = socPlans[idx];
+      if (!p || !hasCarnet) return;
+      openModal({
+        kicker: "Socios" + (SOC.temporada ? " · Temporada " + SOC.temporada : ""), title: "Tu carnet de socio",
+        tagline: `${p.nombre} · ${priceTxt(p)}`, mode: "socio",
+        body: `${carnetBlock()}<div class="carnet-cta"><button type="button" class="btn btn-primary" data-plan-open="${idx}">Hazte socio</button></div>`
+      });
+      paintCarnet($("#modal-body"), p, "");
+    };
+
+    /* Resumen y texto del botón según la modalidad elegida; campo de tutor si es menor */
+    const syncSocio = () => {
+      const sel = $("#socio-plan");
+      if (!sel) return;
+      const p = socPlans[+sel.value] || socPlans[0];
+      const sum = $("#socio-summary"), btn = $("#socio-submit");
+      if (sum) sum.innerHTML = `<strong>${esc(p.nombre)}</strong><span>${esc(priceTxt(p))}</span>`;
+      if (btn) btn.textContent = stripeUrl(p) ? "Continuar al pago" : "Enviar solicitud";
+      paintCarnet($("#socio-preview"), p, ($("#socio-nombre") || {}).value);
+      const age = ageOn(($("#socio-nacimiento") || {}).value);
+      const row = $("#socio-tutor-row"), tutor = $("#socio-tutor");
+      if (row && tutor) {
+        const minor = age !== null && age < 18;
+        row.hidden = !minor;
+        tutor.required = minor;
+      }
+    };
+
+    plansEl.addEventListener("click", (ev) => {
+      const eye = ev.target.closest("[data-carnet-plan]");
+      if (eye) { openCarnet(+eye.dataset.carnetPlan); return; }
+      const btn = ev.target.closest("[data-plan]");
+      if (btn) openSocio(+btn.dataset.plan);
+    });
+
+    if (modal) {
+      modal.addEventListener("change", (ev) => { if (ev.target.closest("#socio-form")) syncSocio(); });
+      modal.addEventListener("input", (ev) => { if (ev.target.id === "socio-nombre") syncSocio(); });
+      modal.addEventListener("click", (ev) => {
+        const flip = ev.target.closest("[data-carnet-flip]");
+        if (flip) {
+          const wrap = flip.closest(".carnet-wrap");
+          if (!wrap || !wrap.querySelector(".carnet-back")) return;
+          const back = wrap.classList.toggle("is-flipped");
+          const b = wrap.querySelector("button[data-carnet-flip]");
+          if (b) b.textContent = back ? "Ver anverso" : "Ver reverso";
+          return;
+        }
+        const open = ev.target.closest("[data-plan-open]");
+        if (open) { openSocio(+open.dataset.planOpen); return; }
+        const tog = ev.target.closest("[data-carnet-toggle]");
+        if (tog) {
+          const box = $("#socio-preview");
+          if (!box) return;
+          if (!box.innerHTML) box.innerHTML = carnetBlock();   /* la imagen solo se descarga al abrirla */
+          box.hidden = !box.hidden;
+          tog.setAttribute("aria-expanded", String(!box.hidden));
+          tog.querySelector("span").textContent = box.hidden ? "Ver cómo quedará mi carnet" : "Ocultar el carnet";
+          syncSocio();
+        }
+      });
+      modal.addEventListener("submit", async (ev) => {
+        const form = ev.target.closest("#socio-form");
+        if (!form) return;
+        ev.preventDefault();
+        const status = $("#socio-status");
+        status.textContent = ""; status.className = "form-status";
+        syncSocio();
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+
+        const p = socPlans[+$("#socio-plan").value] || socPlans[0];
+        const pay = stripeUrl(p);
+        const ref = "FNX-" + Date.now().toString(36).toUpperCase().slice(-6) + Math.random().toString(36).slice(2, 5).toUpperCase();
+        const data = new FormData(form);
+        const email = String(data.get("email") || "").trim();
+        const nombre = String(data.get("nombre") || "").trim();
+        data.set("modalidad", p.nombre);
+        data.set("precio", priceTxt(p));
+        data.set("referencia", ref);
+        data.set("pago", pay ? "Online (Stripe). Comprobar el cobro en Stripe con la referencia." : "Pendiente (fuera de la web)");
+        if (!data.get("tutor")) data.delete("tutor");
+        if (!data.get("comentarios")) data.delete("comentarios");
+        data.set("privacidad", "Aceptada");
+        data.set("access_key", (document.querySelector('#contact-form input[name="access_key"]') || {}).value || "");
+        data.set("subject", `[Web Fénix FS] Alta de socio · ${p.nombre} · ${nombre}`);
+        data.set("from_name", "Web Fénix FS");
+
+        const btn = $("#socio-submit");
+        const btnLabel = btn.textContent;
+        btn.disabled = true; btn.textContent = "Enviando...";
+        try {
+          const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: data, headers: { "Accept": "application/json" } });
+          if (!res.ok) throw new Error("Respuesta no válida");
+        } catch (err) {
+          status.textContent = "No se ha podido enviar la solicitud. Escríbenos a fenixfutsala@gmail.com.";
+          status.classList.add("error");
+          btn.disabled = false; btn.textContent = btnLabel;
+          return;
+        }
+
+        if (pay) {
+          /* Enlace de pago de Stripe con el email ya puesto y la referencia para casar cobro y alta */
+          const u = new URL(pay);
+          if (email) u.searchParams.set("prefilled_email", email);
+          u.searchParams.set("client_reference_id", ref);
+          u.searchParams.set("locale", "es");
+          $("#modal-body").innerHTML = `
+            <div class="socio-done">
+              <h3>Solicitud recibida</h3>
+              <p>Te llevamos al pago seguro para completar el alta de <strong>${esc(p.nombre)}</strong>.</p>
+              <p class="socio-ref">Referencia: <strong>${esc(ref)}</strong></p>
+              <a class="btn btn-primary" href="${esc(u.toString())}">Ir al pago</a>
+            </div>`;
+          setTimeout(() => { window.location.href = u.toString(); }, 1400);
+        } else {
+          $("#modal-body").innerHTML = `
+            <div class="socio-done">
+              <h3>¡Solicitud recibida!</h3>
+              <p>Gracias, ${esc(nombre.split(/\s+/)[0] || "")}. Hemos registrado tu alta de <strong>${esc(p.nombre)}</strong> (${esc(priceTxt(p))}).</p>
+              ${SOC.pago ? `<p>${esc(SOC.pago)}</p>` : ""}
+              <p class="socio-ref">Referencia: <strong>${esc(ref)}</strong></p>
+              <button type="button" class="btn btn-outline" data-close>Cerrar</button>
+            </div>`;
+        }
+      });
+    }
+
+    /* Vuelta desde Stripe: el enlace de pago redirige a la web con ?socio=ok */
+    try {
+      const qs = new URLSearchParams(window.location.search);
+      if (qs.get("socio") === "ok") {
+        openModal({
+          kicker: "Socios" + (SOC.temporada ? " · Temporada " + SOC.temporada : ""), title: "¡Ya eres de Fénix!", tagline: "", mode: "socio",
+          body: `<div class="socio-done"><p>${esc(SOC.gracias || "Hemos recibido tu pago. Gracias por hacerte socio.")}</p><button type="button" class="btn btn-primary" data-close>Cerrar</button></div>`
+        });
+        if (history.replaceState) history.replaceState(null, "", window.location.pathname + "#socios");
+      }
+    } catch (e) { /* sin URLSearchParams: no pasa nada */ }
+  }
 
   /* ---------- Instagram ---------- */
   const igEl = $("#instagram-feed");

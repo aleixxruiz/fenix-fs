@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=61">
+  <link rel="stylesheet" href="css/style.css?v=64">
 </head>
 <body>
 
@@ -34,6 +34,7 @@
         <a href="#estadisticas">Estadísticas</a>
         <a href="#noticias">Noticias</a>
         <a href="#tienda">Tienda</a>
+        <a href="#socios">Socios</a>
         <a href="#contacto" class="nav-cta">Contacto</a>
       </nav>
     </div>
@@ -52,6 +53,7 @@
         </p>
         <div class="hero-actions">
           <a href="#equipos" class="btn btn-primary">Nuestros equipos</a>
+          <a href="#socios" class="btn btn-outline btn-gold">Hazte socio</a>
           <a href="#contacto" class="btn btn-outline">Ayúdanos a crecer</a>
         </div>
       </div>
@@ -87,7 +89,7 @@
         <p class="section-kicker">Temporada 26/27</p>
         <h2 class="section-title">Nueva piel,<br>misma esencia</h2>
         <p class="section-intro">
-          Presentamos la equipación oficial del Fénix FS para la temporada 2026/27.
+          Presentamos la equipación oficial de Fénix FS para la temporada 2026/27.
           Negro para la primera, blanco para la segunda, y la franja roja y dorada
           que nos identifica en cada partido.
         </p>
@@ -131,7 +133,7 @@
         <div class="sponsors sponsors-collab" id="collaborators"></div>
       </div>
       <div class="sponsor-cta">
-        <p>¿Quieres que tu marca acompañe al Fénix esta temporada?</p>
+        <p>¿Quieres que tu marca acompañe a Fénix esta temporada?</p>
         <a href="#contacto" class="btn btn-primary">Quiero patrocinar</a>
       </div>
     </div>
@@ -145,7 +147,7 @@
       <div class="section-head">
         <p class="section-kicker">Equipos</p>
         <h2 class="section-title">Los equipos del club</h2>
-        <p class="section-intro">Cada temporada crecemos. Estos son los equipos que defienden la camiseta del Fénix.</p>
+        <p class="section-intro">Cada temporada crecemos. Estos son los equipos que defienden la camiseta de Fénix.</p>
       </div>
       <div class="grid grid-teams" id="teams"></div>
     </div>
@@ -157,7 +159,7 @@
       <div class="section-head">
         <p class="section-kicker">Partidos</p>
         <h2 class="section-title">Calendario y resultados</h2>
-        <p class="section-intro">Próximos partidos, resultados y clasificación oficial de la FCF. Ven a animar al Fénix.</p>
+        <p class="section-intro">Próximos partidos, resultados y clasificación oficial de la FCF. Ven a animar a Fénix.</p>
       </div>
       <div class="fcf" id="fcf" hidden>
         <div class="fcf-tabs" id="fcf-tabs" role="tablist"></div>
@@ -172,7 +174,7 @@
     <div class="container">
       <div class="section-head">
         <p class="section-kicker">Estadísticas</p>
-        <h2 class="section-title">Los números del Fénix</h2>
+        <h2 class="section-title">Los números de Fénix</h2>
         <p class="section-intro">Goles, tarjetas y balance de cada equipo. Se actualizan solos con cada resultado.</p>
       </div>
       <div class="stats-tabs" id="stats-tabs" role="tablist"></div>
@@ -187,7 +189,7 @@
       <div class="section-head">
         <p class="section-kicker">Noticias</p>
         <h2 class="section-title">Actualidad del club</h2>
-        <p class="section-intro">Lo último que pasa en el Fénix: fichajes, eventos, resultados destacados y más.</p>
+        <p class="section-intro">Lo último que pasa en Fénix: fichajes, eventos, resultados destacados y más.</p>
       </div>
       <div class="grid grid-news" id="news"></div>
     </div>
@@ -199,10 +201,23 @@
       <div class="section-head">
         <p class="section-kicker">Tienda</p>
         <h2 class="section-title">Viste de Fénix</h2>
-        <p class="section-intro">Equipación oficial y merchandising del club. Cada compra ayuda a que el Fénix siga creciendo.</p>
+        <p class="section-intro">Equipación oficial y merchandising del club. Cada compra ayuda a que Fénix siga creciendo.</p>
       </div>
       <div class="grid grid-shop" id="shop"></div>
       <p class="shop-note" id="shop-note"></p>
+    </div>
+  </section>
+
+  <!-- ===== SOCIOS (tarjetas y formulario desde js/data.js → socios) ===== -->
+  <section class="section" id="socios">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-kicker">Socios</p>
+        <h2 class="section-title">Hazte socio de Fénix</h2>
+        <p class="section-intro" id="socios-intro">Con tu carnet ayudas a que el club siga creciendo.</p>
+      </div>
+      <div class="grid grid-plans" id="plans"></div>
+      <p class="shop-note" id="socios-note"></p>
     </div>
   </section>
 
@@ -226,7 +241,7 @@
     <div class="container contact-inner">
       <div class="contact-text">
         <p class="section-kicker">Contacto</p>
-        <h2 class="section-title">Forma parte del Fénix</h2>
+        <h2 class="section-title">Forma parte de Fénix</h2>
         <p>
           Seas empresa, jugador, entrenador o simplemente alguien que quiere echar una mano,
           hay un sitio para ti en el club. Cuéntanos cómo quieres colaborar y te contestaremos lo antes posible.
@@ -244,7 +259,7 @@
 
       <form class="contact-form" id="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
         <input type="hidden" name="access_key" value="3599e7ba-739a-46d7-b7f5-035b320bd7bf">
-        <input type="hidden" name="subject" value="Nuevo mensaje desde la web del Fénix FS">
+        <input type="hidden" name="subject" value="Nuevo mensaje desde la web de Fénix FS">
         <input type="hidden" name="from_name" value="Web Fénix FS">
         <div class="form-row">
           <label for="nombre">Nombre *</label>
@@ -264,9 +279,10 @@
             <option value="">Selecciona una opción</option>
             <option value="Patrocinio">Quiero ser patrocinador</option>
             <option value="Colaboración">Quiero ser colaborador</option>
-            <option value="Jugar">Quiero jugar en el Fénix</option>
+            <option value="Jugar">Quiero jugar en Fénix</option>
             <option value="Cuerpo técnico">Quiero formar parte del cuerpo técnico</option>
             <option value="Tienda">Consulta o pedido de la tienda</option>
+            <option value="Socios">Consulta sobre el carnet de socio</option>
             <option value="Prensa">Prensa y medios</option>
             <option value="Otro">Otra consulta</option>
           </select>
@@ -322,9 +338,9 @@
     </div>
   </div>
 
-  <script src="js/data.js?v=52"></script>
+  <script src="js/data.js?v=58"></script>
   <script src="data/instagram.js"></script>
-  <script src="js/main.js?v=52"></script>
+  <script src="js/main.js?v=58"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>

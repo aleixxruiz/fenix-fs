@@ -4,3 +4,6 @@ Thumbs.db
 *.log
 _preview.html
 _mobile.html
+
+# Fotos originales de jugadores (pesadas y sin tratar): se quedan solo en local
+assets/originales/senior-b/

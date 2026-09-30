@@ -1257,3 +1257,99 @@ body.modal-open .wa-float, body.nav-open .wa-float { display: none; }
 
 /* v36 · Cuadrícula de Instagram: recuadros cuadrados (las publicaciones del club son 1:1) */
 .ig-post { aspect-ratio: 1 / 1; }
+
+/* =====================================================================
+   v37 · Socios: tarjetas de carnet y formulario de alta en el pop-up
+   ===================================================================== */
+.grid-plans { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: stretch; }
+.plan { position: relative; display: flex; flex-direction: column; overflow: visible; }
+.plan .card-body { display: flex; flex-direction: column; gap: 0.6rem; flex: 1; padding: 1.8rem 1.5rem 1.5rem; }
+.plan h3 { margin-bottom: 0; }
+.plan .plan-price { font-family: var(--font-display); font-size: 3rem; line-height: 1; color: var(--gold); margin: 0; }
+.plan-price small { font-family: var(--font-body); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); margin-left: 0.4rem; }
+.plan-price-soon { font-family: var(--font-body); font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--grey); }
+.plan-desc { font-size: 0.95rem; margin: 0; }
+.plan-list { list-style: none; margin: 0.4rem 0 1.2rem; padding: 0; display: grid; gap: 0.5rem; }
+.plan-list li { position: relative; padding-left: 1.5rem; font-size: 0.95rem; color: var(--white); line-height: 1.4; }
+.plan-list li::before {
+  content: ""; position: absolute; left: 0.1rem; top: 0.3em; width: 0.42rem; height: 0.72rem;
+  border: solid var(--red); border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.plan .btn { margin-top: auto; }
+button.btn-outline { background: transparent; }
+/* Niveles de carnet: borde, precio y pastilla en bronce, plata u oro */
+.plan-bronce { --tier: #c9783c; --tier-glow: rgba(201,120,60,0.16); }
+.plan-plata { --tier: #c9ced6; --tier-glow: rgba(201,206,214,0.14); }
+.plan-oro { --tier: #e0b13f; --tier-glow: rgba(224,177,63,0.18); }
+.plan-tier { border: 2px solid var(--tier); box-shadow: 0 18px 50px var(--tier-glow), var(--shadow); }
+.plan-tier:hover { border-color: var(--tier); box-shadow: 0 22px 60px var(--tier-glow), 0 0 0 1px var(--tier), var(--shadow); }
+.plan-tier .plan-price { color: var(--tier); }
+.plan-tier .plan-badge { background: var(--tier); }
+.plan-badge {
+  position: absolute; top: -0.8rem; left: 1.5rem; z-index: 2; padding: 0.25rem 0.8rem; border-radius: 999px;
+  background: var(--gold); color: var(--black); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.hero-actions .btn-gold { border-color: var(--gold); color: var(--gold); }
+.hero-actions .btn-gold:hover { background: var(--gold); color: var(--black); }
+
+/* Formulario de alta */
+.modal-socio { width: min(100%, 680px); }
+.socio-summary {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  margin: 0 0 1.3rem; padding: 0.8rem 1rem; border-radius: 10px;
+  background: rgba(214,166,58,0.08); border: 1px solid rgba(214,166,58,0.35);
+}
+.socio-summary strong { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.04em; font-weight: 400; color: var(--white); }
+.socio-summary span { font-family: var(--font-display); font-size: 1.3rem; color: var(--gold); }
+.socio-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; }
+.socio-grid .socio-full { grid-column: 1 / -1; }
+.socio-grid [hidden] { display: none; }
+.socio-form input[type="date"] { color-scheme: dark; }
+.socio-legal { font-size: 0.75rem; line-height: 1.5; color: var(--grey); margin: 0 0 1.2rem; }
+.socio-done { text-align: center; padding: 0.6rem 0 0.4rem; }
+.socio-done h3 { font-size: 2rem; margin-bottom: 0.6rem; }
+.socio-done p { color: var(--grey); margin: 0 auto 0.9rem; max-width: 46ch; }
+.socio-done p strong { color: var(--white); }
+.socio-done .socio-ref { font-size: 0.85rem; letter-spacing: 0.05em; }
+.socio-done .btn { margin-top: 0.6rem; }
+@media (max-width: 720px) {
+  .grid-plans { grid-template-columns: 1fr; gap: 1.6rem; }
+  .plan-price { font-size: 2.5rem; }
+  .socio-grid { grid-template-columns: 1fr; }
+  .socio-summary strong { font-size: 1.3rem; }
+}
+
+/* =====================================================================
+   v38 · Socios: vista previa del carnet (botón del ojo, carnet que gira)
+   ===================================================================== */
+.plan-eye, .socio-eye {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+  background: none; border: 0; padding: 0.35rem 0.5rem; color: var(--grey);
+  font: inherit; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em; cursor: pointer; transition: color 0.2s;
+}
+.plan-eye svg, .socio-eye svg { width: 1.3rem; height: 1.3rem; flex: none; }
+.plan-eye:hover, .socio-eye:hover, .plan-eye:focus-visible, .socio-eye:focus-visible { color: var(--white); }
+.plan .plan-eye { align-self: center; margin-top: 0.3rem; }
+.plan-tier .plan-eye:hover { color: var(--tier); }
+.socio-eye { margin: -0.6rem 0 1.1rem; padding-left: 0; color: var(--gold); }
+.socio-preview { margin-bottom: 1.4rem; }
+.socio-preview[hidden] { display: none; }
+
+.carnet-wrap { max-width: 600px; margin-inline: auto; }
+.carnet { aspect-ratio: 1084 / 517; perspective: 1400px; cursor: pointer; }
+.carnet-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.65s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.carnet-wrap.is-flipped .carnet-inner { transform: rotateY(180deg); }
+.carnet-face { position: absolute; inset: 0; display: grid; place-items: center; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.carnet-front svg {
+  display: block; width: 100%; height: 100%; overflow: hidden; border-radius: 3.6% / 7.5%;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+}
+.carnet-back { transform: rotateY(180deg); }
+.carnet-back img { width: 100%; height: auto; border-radius: 3.6% / 8.8%; box-shadow: 0 18px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08); }
+.carnet-name { font-family: "Bebas Neue", var(--font-display); font-size: 37px; letter-spacing: 1px; fill: #ececec; }
+.carnet-tier { font-family: var(--font-body); font-size: 17px; font-weight: 500; letter-spacing: 6px; fill: #d9d9d9; }
+.carnet-badge { font-family: "Bebas Neue", var(--font-display); font-size: 31px; letter-spacing: 1px; fill: #fff; }
+.carnet-actions { text-align: center; margin-top: 1rem; }
+.carnet-note { margin: 0.8rem auto 0; max-width: 48ch; text-align: center; font-size: 0.8rem; color: var(--grey); }
+.carnet-cta { text-align: center; margin-top: 1.5rem; }
+@media (prefers-reduced-motion: reduce) { .carnet-inner { transition: none; } }

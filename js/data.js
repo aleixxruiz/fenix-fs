@@ -29,7 +29,7 @@ const CLUB = {
   /* Párrafo de introducción a la historia. */
   historiaIntro:
     "Todo empezó con una idea sencilla entre amigos: un equipo donde juntarse a jugar a fútbol sala. " +
-    "Ocho años después, el Fénix es un club con cuatro equipos senior, cantera y un sitio en la " +
+    "Ocho años después, Fénix es un club con cuatro equipos senior, cantera y un sitio en la " +
     "Primera División Catalana. Esta es la historia de cómo hemos llegado hasta aquí.",
 
   /* Línea de tiempo.
@@ -40,8 +40,8 @@ const CLUB = {
   historia: [
     {
       year: "2018",
-      title: "Renace el Fénix",
-      text: "Un grupo de amigos con ganas de jugar a fútbol sala decide montar su propio equipo. De esa idea nace el Fénix: dos equipos senior en el primer año y muchas ganas de aprender.",
+      title: "Renace Fénix",
+      text: "Un grupo de amigos con ganas de jugar a fútbol sala decide montar su propio equipo. De esa idea nace Fénix: dos equipos senior en el primer año y muchas ganas de aprender.",
       image: "assets/img/historia/2018.jpg"
     },
     {
@@ -54,7 +54,7 @@ const CLUB = {
     {
       year: "2020",
       title: "Resistir",
-      text: "El año de la COVID-19 pone a prueba a todos los clubes. El Fénix aguanta el golpe, mantiene el grupo unido y da el salto a la Federació Catalana de Futbol.",
+      text: "El año de la COVID-19 pone a prueba a todos los clubes. Fénix aguanta el golpe, mantiene el grupo unido y da el salto a la Federació Catalana de Futbol.",
       image: "assets/img/historia/2020.jpg"
     },
     {
@@ -117,7 +117,7 @@ const CLUB = {
       name: "Senior A",
       tagline: "El presente del club",
       category: "Primera División Catalana",
-      description: "Compite en la Primera División Catalana de fútbol sala tras un ascenso histórico. El equipo que lleva el nombre del Fénix a lo más alto.",
+      description: "Compite en la Primera División Catalana de fútbol sala tras un ascenso histórico. El equipo que lleva el nombre de Fénix a lo más alto.",
       images: [
         "assets/img/teams/senior-a-2.jpg",
         "assets/img/teams/senior-a-1.jpg"
@@ -160,9 +160,9 @@ const CLUB = {
         { name: "Alejandro Del Saz",   position: "Portero", number: "25", photo: "assets/img/players/senior-b/alejandro-del-saz.jpg" },
         { name: "Izán Carrasco",       position: "Cierre",  number: "6", photo: "assets/img/players/senior-b/izan-carrasco.jpg" },
         { name: "Aleix Ruiz",          position: "Cierre",  number: "11", photo: "assets/img/players/senior-b/aleix-ruiz.jpg" },
-                { name: "Cristian Riquelme",   position: "Ala",     number: "4",  photo: "assets/img/members/cristian-riquelme.jpg" },
-{ name: "Kike Nayach",         position: "Ala",     number: "10", photo: "assets/img/players/senior-b/kike-nayach.jpg" },
-        { name: "Arnau Moreno",        position: "Ala",     number: "9", photo: "assets/img/players/senior-b/arnau-moreno.jpg" },
+        { name: "Cristian Riquelme",   position: "Ala",     number: "4",  photo: "assets/img/players/senior-b/cristian-riquelme.jpg" },
+        { name: "Kike Nayach",         position: "Ala",     number: "10", photo: "assets/img/players/senior-b/kike-nayach.jpg" },
+        { name: "Antonio Arenas",      position: "Ala",     number: "77", photo: "assets/img/players/senior-b/antonio-arenas.jpg" },
         { name: "David Cruz",          position: "Ala",     number: "17", photo: "assets/img/players/senior-b/david-cruz.jpg" },
         { name: "David Perdiguer",     position: "Ala",     number: "23", photo: "assets/img/players/senior-b/david-perdiguer.jpg" },
         { name: "Fran Alcaraz",        position: "Ala",     number: "15", photo: "assets/img/players/senior-b/fran-alcaraz.jpg" },
@@ -252,7 +252,7 @@ const CLUB = {
     { equipo: "Senior D", competicion: "3ª Catalana · BCN Gr. 6", grupId: "58162591",
       url: "https://www.fcf.cat/ca/competicio?temporadaId=22&disciplinaId=19308236&competicioId=58162583&grupId=58162591" }
   ],
-  /* Cómo reconocer al Fénix en los datos de la FCF (se busca este texto en el nombre del equipo). */
+  /* Cómo reconocer a Fénix en los datos de la FCF (se busca este texto en el nombre del equipo). */
   fcfNombreClub: "FENIX",
 
   /* =====================================================================
@@ -290,7 +290,7 @@ const CLUB = {
       subtitulo: "Nueva piel, misma esencia",
       resumen: "Negro y blanco con la franja roja y dorada que nos identifica. Ya disponible en la tienda del club.",
       contenido:
-        "El Fénix FS estrena piel para la temporada 2026/27. La primera equipación vuelve al negro, con la franja roja y dorada " +
+        "Fénix FS estrena piel para la temporada 2026/27. La primera equipación vuelve al negro, con la franja roja y dorada " +
         "cruzando el pecho, y la segunda se viste de blanco manteniendo los mismos detalles.\n\n" +
         "El escudo de Fénix Futsal Sabadell va en el pecho y el #SIENTELFENIX en la manga, porque la esencia no cambia: " +
         "somos el mismo club, con la misma ambición.\n\n" +
@@ -316,11 +316,11 @@ const CLUB = {
       fecha: "2026-08-20",
       titulo: "Nuevos patrocinadores para la temporada",
       subtitulo: "",
-      resumen: "Damos la bienvenida a las empresas que apoyan al Fénix este año. Gracias por creer en el proyecto.",
+      resumen: "Damos la bienvenida a las empresas que apoyan a Fénix este año. Gracias por creer en el proyecto.",
       contenido:
         "Esta temporada contamos con el apoyo de Ingeniería Geproelec, Almo Instal·lacions, Bryma's Pizza Bar, Rochel Estilistes, " +
         "Fenigraf Serigrafía y Joel García Masaje Deportivo como patrocinadores del club.\n\n" +
-        "Gracias a ellos podemos competir, equiparnos y seguir creciendo. Si quieres que tu marca acompañe al Fénix, hay sitio para ti.",
+        "Gracias a ellos podemos competir, equiparnos y seguir creciendo. Si quieres que tu marca acompañe a Fénix, hay sitio para ti.",
       imagen: "",
       url: "#patrocinadores",
       urlTexto: "Ver patrocinadores"
@@ -339,7 +339,7 @@ const CLUB = {
   tiendaProximamente: {
     kicker: "Tienda · Muy pronto",
     titulo: "Algo se está cocinando",
-    intro: "Estamos preparando la tienda oficial del Fénix. Equipación, ropa de calle y algún detalle más. Te dejamos entrever lo que viene.",
+    intro: "Estamos preparando la tienda oficial de Fénix. Equipación, ropa de calle y algún detalle más. Te dejamos entrever lo que viene.",
     nota: "¿Quieres ser el primero en saberlo? Pulsa \"Avísame\" y te escribiremos cuando esté disponible."
   },
   tienda: [
@@ -349,6 +349,89 @@ const CLUB = {
     { nombre: "Bufanda Siente el Fénix",            precio: "Por anunciar", imagen: "assets/img/tienda/bufanda.jpg",          url: "" }
   ],
   tiendaNota: "Pedidos a través del formulario de contacto o por Instagram. Recogida en el pabellón los días de partido.",
+
+  /* =====================================================================
+     SOCIOS. Cada bloque de 'planes' es una modalidad de carnet.
+       · nombre / precio / periodo: lo que se ve en la tarjeta ("15 €" / "año"; periodo puede ir vacío).
+         Si 'precio' está vacío sale "Precio por anunciar".
+       · descripcion: una frase corta. ventajas: lista de lo que incluye.
+       · nivel: color del borde de la tarjeta: "bronce", "plata" u "oro" (vacío = sin color).
+       · etiqueta: texto de una pastilla sobre la tarjeta (opcional).
+       · stripe: ENLACE DE PAGO de Stripe (https://buy.stripe.com/...). Mientras esté
+         vacío, el alta se envía por correo al club y al socio se le enseña el texto
+         de 'pago'. Con el enlace puesto, tras enviar el alta se le lleva a pagar.
+     Si la lista 'planes' está vacía, la sección y sus enlaces se ocultan.
+     ===================================================================== */
+  socios: {
+    temporada: "26/27",
+    intro: "Fénix lo hacemos entre todos. Con tu carnet ayudas a pagar pistas, arbitrajes y material, y pasas a formar parte del club.",
+    planes: [
+      {
+        nombre: "Socio Fénix",
+        precio: "15 €", periodo: "año",
+        nivel: "bronce",
+        descripcion: "",
+        ventajas: [
+          "Carnet de socio",
+          "Descuento del 10% en la tienda del club",
+          "Sorteos y promociones exclusivas de socios"
+        ],
+        etiqueta: "",
+        stripe: ""
+      },
+      {
+        nombre: "Socio Premium",
+        precio: "35 €", periodo: "año",
+        nivel: "plata",
+        descripcion: "",
+        ventajas: [
+          "Carnet de socio",
+          "Descuento del 10% en la tienda del club",
+          "Sorteos y promociones exclusivas de socios",
+          "Bufanda del club",
+          "Beneficios en patrocinadores y colaboradores"
+        ],
+        etiqueta: "",
+        stripe: ""
+      },
+      {
+        nombre: "Socio Fundador",
+        precio: "85 €", periodo: "año",
+        nivel: "oro",
+        descripcion: "",
+        ventajas: [
+          "Carnet de socio",
+          "Descuento del 10% en la tienda del club",
+          "Sorteos y promociones exclusivas de socios",
+          "Bufanda del club",
+          "Camiseta de apoyo al club personalizada y numerada",
+          "Beneficios en patrocinadores y colaboradores"
+        ],
+        etiqueta: "",
+        stripe: ""
+      }
+    ],
+    /* Texto que ve el socio tras enviar el alta cuando el carnet NO tiene enlace de Stripe */
+    pago: "En breve te escribiremos con las instrucciones para el pago de la cuota (Bizum, transferencia o en el pabellón los días de partido). El alta queda confirmada al recibir el pago.",
+    /* Línea pequeña debajo de las tarjetas */
+    nota: "¿Tienes dudas sobre el carnet? Escríbenos por el formulario de contacto o por WhatsApp.",
+    /* Vista previa del carnet (botón del ojo en cada tarjeta y en el formulario de alta).
+       'frente' es el anverso SIN el nombre ni la modalidad: la web los escribe encima
+       (la modalidad elegida y el nombre que teclea el socio). 'reverso' se ve al girarlo.
+       Deja 'frente' vacío para quitar la vista previa. */
+    carnet: {
+      frente: "assets/img/socios/carnet-frente.jpg",
+      reverso: "assets/img/socios/carnet-reverso.jpg",
+      nota: "Vista previa orientativa. El número de socio y la foto se asignan al confirmar el alta."
+    },
+    /* Pedir DNI/NIE en el alta (true / false) */
+    pedirDni: true,
+    /* Casilla de consentimiento y aviso de privacidad del formulario de alta */
+    consentimiento: "Acepto que Fénix FS trate mis datos para gestionar mi alta como socio.",
+    privacidad: "Responsable: Fénix FS. Finalidad: gestionar el alta y la relación con los socios. Los datos no se ceden a terceros salvo obligación legal. Puedes acceder, rectificar o suprimir tus datos escribiendo a fenixfutsala@gmail.com. Si el socio es menor de edad, el alta debe hacerla su padre, madre o tutor legal.",
+    /* Mensaje al volver a la web después de pagar en Stripe (…/?socio=ok) */
+    gracias: "Hemos recibido tu pago y tu alta como socio está confirmada. En breve te escribiremos con tu carnet. ¡Gracias por formar parte de Fénix!"
+  },
 
   /* =====================================================================
      INSTAGRAM. Pega aquí los enlaces de los posts que quieras mostrar
