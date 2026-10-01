@@ -1,4 +1,4 @@
-/* Últimas publicaciones de @fenix_fs - actualizado 2026-09-30 23:26 - generado por herramientas/actualizar-instagram.mjs */
+/* Últimas publicaciones de @fenix_fs - actualizado 2026-10-01 15:30 - generado por herramientas/actualizar-instagram.mjs */
 window.INSTAGRAM_POSTS = [
   "https://www.instagram.com/p/Dd7LCxdgxF-/",
   "https://www.instagram.com/p/Dd4mZYaNwhC/",
